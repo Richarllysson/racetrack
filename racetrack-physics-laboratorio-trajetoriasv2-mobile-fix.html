@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Racetrack Physics — MVP</title>
+<style>:root{font-family:Inter,system-ui,sans-serif;color:#edf2f7;background:#0b1118}*{box-sizing:border-box}body{margin:0;background:#0b1118;min-height:100vh}.app{max-width:1280px;margin:auto;padding:20px}.app-header{display:grid;grid-template-columns:1fr auto auto;gap:20px;align-items:center;margin-bottom:18px}.brand h1{margin:0;font-family:Oswald,sans-serif}.brand h1 span{color:#ff5a1f}.brand p{margin:6px 0;color:#8fa3b8;font:11px monospace}.tabs{display:flex;gap:8px}.tab-btn{border:1px solid #334155;background:#111827;color:#dbe5ef;padding:9px 14px;border-radius:8px;cursor:pointer}.tab-btn.active{background:#532315;border-color:#ff5a1f}.score-block{text-align:right}.score-block .label{font-size:11px;color:#8fa3b8}.score-block .value{font:bold 24px Oswald;color:#f2c14e}.layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(280px,.75fr);gap:18px}.panel{background:#111923;border:1px solid #263242;border-radius:14px;padding:18px}.phase-tag{font:700 11px monospace;color:#4fd1e8}.phase-title{font:700 26px Oswald;margin:8px 0}.phase-desc{margin:0 0 14px;color:#9eb0c2;line-height:1.5}.control-panel{display:flex;flex-direction:column;gap:14px}.control-panel .tabs{flex-wrap:wrap}.control-panel .tabs .tab-btn{flex:1;padding:8px}.control-group label{display:block;font-size:11px;color:#9eb0c2;margin-bottom:8px}.slider-row{display:flex;align-items:center;gap:12px}.slider-row input[type=range]{flex:1}.readout{min-width:58px;text-align:right;font:700 14px monospace}.btn{width:100%;border:0;border-radius:9px;padding:11px;cursor:pointer;font-weight:700}.btn-run{background:#ff5a1f;color:#fff}.btn-next{background:#f2c14e;color:#18120a}.btn:disabled{opacity:.45}.stat-row{display:flex;justify-content:space-between;color:#aab8c8;font-size:13px}.stat-row b{color:#fff}.hud{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.hud .cell{background:#18222e;padding:10px;border-radius:8px}.hud .k{font-size:10px;color:#8193a7}.hud .v{margin-top:4px;font:700 16px monospace}canvas{width:100%;height:auto;background:#0d151e;border-radius:10px}.feedback{white-space:pre-line;padding:10px;border-radius:8px;background:#16202b;min-height:40px}.feedback.success{border:1px solid #59f7b0}.feedback.short{border:1px solid #f2c14e}.journal{margin-top:18px}.journal h2{font:700 22px Oswald;margin:0 0 12px}.journal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.entry{padding:12px;border-radius:9px;background:#18222e}.entry.locked{opacity:.5}.etext{margin-top:5px;color:#9fb0c1;font-size:13px;line-height:1.45}.eformula{margin-top:8px;color:#4fd1e8;font:700 13px monospace}.math-examples{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.example-btn{border:1px solid #334155;background:#111827;color:#c9d7e5;padding:7px 9px;border-radius:7px;cursor:pointer}.math-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.math-field.full{grid-column:1/-1}.math-field input{width:100%;margin-top:5px;padding:8px;border-radius:7px;border:1px solid #334155;background:#0c131b;color:#fff}.sandbox-note{color:#8fa3b8;font-size:12px}.end-banner{text-align:center;color:#f2c14e}@media(max-width:900px){.app-header{grid-template-columns:1fr}.score-block{text-align:left}.layout{grid-template-columns:1fr}}
+/* LABORATÓRIO DE IMPACTO */
+.lab-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 14px}
+.lab-chip{background:#18222e;border:1px solid #263242;border-radius:9px;padding:9px}
+.lab-chip .k{font-size:10px;color:#8193a7}.lab-chip .v{margin-top:3px;font:700 15px monospace}
+.lab-level-box{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-radius:10px;background:#0f1822;border:1px solid #263242;margin-bottom:12px}
+.lab-level-box strong{font:700 18px Oswald;color:#f2c14e}.lab-level-box .goal{font:700 13px monospace;color:#edf2f7}
+.lab-shot-box{padding:10px;border-radius:10px;background:#18222e;border:1px solid #263242;font-size:12px;color:#9eb0c2}
+.lab-shot-box b{color:#fff;font:700 15px monospace}
+.lab-result{margin-top:10px;padding:11px;border-radius:9px;background:#16202b;border:1px solid #334155}
+.lab-result.success{border-color:#59f7b0}.lab-result.fail{border-color:#f2c14e}
+.lab-store-card{display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:10px;padding:10px;margin:8px 0;background:#18222e;border-radius:9px}
+.lab-store-card .meta{min-width:0}.lab-store-card .meta b{display:block}.lab-store-card .meta span{font-size:11px;color:#8fa3b8}
+.lab-store-card canvas{border-radius:50%;width:48px;height:48px}
+.lab-empty{padding:12px;color:#8fa3b8;background:#18222e;border-radius:9px}
+@media(max-width:700px){
+  .app{padding:10px;}
+  .app-header{gap:10px;}
+  .brand h1{font-size:24px;}
+  .brand p{font-size:9px;}
+  .tabs{width:100%;}
+  .tabs .tab-btn{flex:1;min-height:44px;padding:10px 8px;font-size:12px;}
+  .layout{grid-template-columns:1fr;gap:12px;}
+  .panel{padding:12px;}
+  .phase-title{font-size:22px;}
+  .hud{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .hud .cell{padding:9px;}
+  .hud .v{font-size:14px;}
+  .slider-row{gap:8px;}
+  .slider-row input[type=range]{min-width:0;width:100%;height:34px;}
+  .readout{min-width:64px;font-size:13px;}
+  .btn{min-height:46px;font-size:14px;}
+  .lab-summary{grid-template-columns:1fr 1fr;}
+  .lab-level-box{align-items:flex-start;flex-direction:column;}
+  .math-grid{grid-template-columns:1fr;}
+  .math-field.full{grid-column:auto;}
+  .math-examples{display:grid;grid-template-columns:1fr 1fr;}
+  .example-btn{min-height:42px;}
+  canvas{touch-action:none;}
+}
+@media(max-width:420px){
+  .app{padding:8px;}
+  .app-header{grid-template-columns:1fr;}
+  .score-block{text-align:left;}
+  .brand h1{font-size:22px;}
+  .tabs{display:grid;grid-template-columns:1fr 1fr 1fr;}
+  .tabs .tab-btn{min-width:0;font-size:11px;padding:9px 5px;}
+  .hud{grid-template-columns:1fr 1fr;}
+  .math-examples{grid-template-columns:1fr;}
+}
+
+.lab-goal-card{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;background:#18222e;border:1px solid #2b3a4d;border-radius:10px;padding:10px;margin-bottom:4px}.lab-goal-card>div{padding:5px 7px}.lab-goal-card .k{display:block;font:10px monospace;color:#8193a7;margin-bottom:3px}.lab-goal-card strong{font:700 18px Oswald;color:#f2c14e}.lab-goal-card .muted{font-size:11px;color:#8fa3b8}.lab-store-card{display:flex;align-items:center;gap:10px;margin:8px 0;padding:10px;background:#18222e;border:1px solid #263242;border-radius:9px}.lab-store-card .meta{display:flex;flex-direction:column;gap:3px;flex:1}.lab-store-card .meta span{font-size:11px;color:#8fa3b8}.lab-empty{padding:12px;background:#16202b;border-radius:8px;color:#9fb0c1}.lab-skin-preview{border-radius:50%;background:#0c131b;border:1px solid #334155;flex:0 0 auto}
+.lab-tip{background:#0f1822;border:1px solid #263242;border-radius:9px;padding:9px 10px}.lab-tip summary{cursor:pointer;color:#f2c14e;font-weight:700;font-size:12px}.lab-tip-content{padding:8px 2px 2px;color:#c9d7e5;font-size:12px;line-height:1.45}.lab-tip-content p{margin:7px 0}.lab-tip-content .eformula{padding:7px 9px;background:#0b1118;border-radius:7px;line-height:1.6}
+</style></head>
+<body>
+<div class="app">
+
+  <header class="app-header">
+    <div class="brand">
+      <h1>RACETRACK <span>PHYSICS</span></h1>
+      <p>OFICINA DE ENGENHARIA · MOVIMENTO · TRAJETÓRIAS · FÍSICA</p>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" id="tabCampaign">Campanha</button>
+      <button class="tab-btn" id="tabSandbox">Sandbox</button>
+      <button class="tab-btn" id="tabLab">Laboratório</button>
+    </div>
+    <div class="score-block">
+      <div class="label" id="scoreLabel">Pontuação</div>
+      <div class="value" id="scoreValue">0</div>
+    </div>
+  </header>
+
+  <!-- CAMPAIGN VIEW -->
+  <div id="campaignView">
+    <div class="layout">
+      <section class="panel">
+        <div class="phase-tag" id="phaseTag">FASE 1 · MÓDULO 1</div>
+        <h2 class="phase-title" id="phaseTitle">Acerte a linha de chegada</h2>
+        <p class="phase-desc" id="phaseDesc">Ajuste a potência do motor. Ele ficará ligado por um tempo fixo — descubra a potência certa para o carrinho parar exatamente sobre o alvo.</p>
+        <canvas id="track" width="860" height="220"></canvas>
+        <div class="feedback" id="feedback">Ajuste os parâmetros e execute o teste.</div>
+      </section>
+
+      <aside class="panel control-panel">
+        <div class="control-group">
+          <label id="controlLabel">Potência do Motor</label>
+          <div class="slider-row">
+            <input type="range" id="paramSlider" min="0" max="120" step="0.5" value="30">
+            <span class="readout" id="paramReadout">30.0</span>
+          </div>
+        </div>
+
+        <button class="btn btn-run" id="runBtn">▶ Executar Teste</button>
+        <button class="btn btn-next" id="nextBtn" disabled>Próxima Fase →</button>
+
+        <div class="stat-row"><span>Tentativas nesta fase</span><b id="attemptsValue">0</b></div>
+        <div class="stat-row"><span id="fixedTimeLabel">Tempo de motor ligado</span><b id="fixedTimeValue">—</b></div>
+
+        <div class="hud">
+          <div class="cell"><div class="k">Última distância</div><div class="v" id="lastDistance">—</div></div>
+          <div class="cell"><div class="k">Precisão</div><div class="v" id="lastPrecision">—</div></div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="panel journal">
+      <h2>Caderno de Descobertas</h2>
+      <div class="journal-grid" id="journalGrid"></div>
+    </section>
+  </div>
+
+  <!-- SANDBOX VIEW -->
+  <div id="sandboxView" style="display:none;">
+    <div class="layout">
+      <section class="panel">
+        <div class="phase-tag">SANDBOX · SEM OBJETIVO</div>
+        <h2 class="phase-title">Bancada de testes livre</h2>
+        <p class="phase-desc">Explore livremente. Não há alvo — apenas observe como a distância muda quando você mexe nos parâmetros.</p>
+        <canvas id="trackSandbox" width="860" height="220"></canvas>
+        <div class="feedback" id="feedbackSandbox">Ajuste os parâmetros e execute o teste.</div>
+        <p class="sandbox-note" id="sandboxFormulaNote"></p>
+      </section>
+
+      <aside class="panel control-panel">
+        <div class="control-group">
+          <label>Modo</label>
+          <div class="slider-row" style="gap:6px; flex-wrap:wrap;">
+            <button class="tab-btn active" id="sbModeUniform" style="flex:1; min-width:90px;">Módulo 1</button>
+            <button class="tab-btn" id="sbModeMuv" style="flex:1; min-width:90px;">Módulo 2</button>
+            <button class="tab-btn" id="sbModeMath" style="flex:1; min-width:90px;">Matemático</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <label id="sbParamLabel">Potência do Motor</label>
+          <div class="slider-row">
+            <input type="range" id="sbParamSlider" min="0" max="120" step="0.5" value="30">
+            <span class="readout" id="sbParamReadout">30.0</span>
+          </div>
+        </div>
+        <div class="control-group">
+          <label>Tempo de Motor Ligado (s)</label>
+          <div class="slider-row">
+            <input type="range" id="sbTimeSlider" min="0.5" max="6" step="0.1" value="3">
+            <span class="readout" id="sbTimeReadout">3.0s</span>
+          </div>
+        </div>
+
+        <div class="math-sandbox" id="mathSandboxPanel" style="display:none;">
+          <div class="math-examples">
+            <button type="button" class="example-btn" data-example="sin(x/20)*16">Senoide</button>
+            <button type="button" class="example-btn" data-example="0.02*(x-40)^2">Parábola</button>
+            <button type="button" class="example-btn" data-example="sin(x/20)+0.001*x^2">Mistura Seno + Quadrática</button>
+            <button type="button" class="example-btn" data-example="cos(x/10)*20">Montanha Russa</button>
+            <button type="button" class="example-btn" data-example="x/20">Rampa Linear</button>
+          </div>
+          <div class="math-grid">
+            <div class="math-field full">
+              <label for="mathExprInput">Função</label>
+              <input id="mathExprInput" type="text" value="sin(x/20)*16">
+            </div>
+            <div class="math-field">
+              <label for="mathDomainStart">Domínio inicial</label>
+              <input id="mathDomainStart" type="number" step="1" value="0">
+            </div>
+            <div class="math-field">
+              <label for="mathDomainEnd">Domínio final</label>
+              <input id="mathDomainEnd" type="number" step="1" value="260">
+            </div>
+            <div class="math-field">
+              <label for="mathResolution">Resolução</label>
+              <input id="mathResolution" type="number" step="50" min="100" value="500">
+            </div>
+            <div class="math-field">
+              <label for="mathFriction">Atrito</label>
+              <input id="mathFriction" type="number" step="0.01" value="0.04">
+            </div>
+            <div class="math-field">
+              <label for="mathGravity">Gravidade</label>
+              <input id="mathGravity" type="number" step="1" value="14">
+            </div>
+          </div>
+          <button class="btn btn-run" id="mathGenerateBtn" type="button">Gerar Pista</button>
+          <div class="feedback" id="mathSandboxFeedback">Use uma função válida para gerar uma pista.</div>
+        </div>
+
+        <button class="btn btn-run" id="sbRunBtn">▶ Executar Teste</button>
+        <div class="hud">
+          <div class="cell"><div class="k">Distância final</div><div class="v" id="sbDistance">—</div></div>
+          <div class="cell"><div class="k">Velocidade final</div><div class="v" id="sbVel">—</div></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- LABORATÓRIO DE IMPACTO -->
+  <div id="labView" style="display:none;">
+    <div class="layout">
+      <section class="panel">
+        <div class="phase-tag">LABORATÓRIO DE IMPACTO · PROCEDURAL</div>
+        <h2 class="phase-title" id="labTitle">Desafio #1</h2>
+        <p class="phase-desc" id="labChallengeText">Coloque a bola no buraco com o menor número de tacadas possível.</p>
+        <div class="lab-level-box">
+          <div><div class="goal">PONTUAÇÃO MÍNIMA</div><strong id="labTargetScore">—</strong></div>
+          <div><div class="goal">LANÇAMENTOS</div><strong id="labShots">—</strong></div>
+          <div><div class="goal">PONTOS DA FASE</div><strong id="labStageScore">0</strong></div>
+        </div>
+        <canvas id="labCanvas" width="860" height="330"></canvas>
+        <div class="feedback" id="labFeedback">Acerte o buraco com o menor número de tacadas possível.
+A mira mostra apenas o início da trajetória.</div>
+      </section>
+      <aside class="panel control-panel">
+        <div class="tabs"><button class="tab-btn active" id="labPlayTab">Jogar</button><button class="tab-btn" id="labShopTab">Loja</button><button class="tab-btn" id="labSkinsTab">Minhas skins</button><button class="tab-btn" id="labStatsTab">Estatísticas</button></div>
+        <div id="labPlayPanel">
+          <div class="control-group"><label>Velocidade inicial</label><div class="slider-row"><input type="range" id="labSpeed" min="10" max="42" step="0.5" value="24"><span class="readout" id="labSpeedOut">24.0 m/s</span></div></div>
+          <div class="control-group"><label>Ângulo</label><div class="slider-row"><input type="range" id="labAngle" min="10" max="80" step="1" value="45"><span class="readout" id="labAngleOut">45°</span></div></div>
+          <button class="btn btn-run" id="labLaunchBtn">▶ Lançar</button>
+          <details class="lab-tip" id="labTip">
+            <summary>💡 Dica: como calcular a trajetória</summary>
+            <div class="lab-tip-content">
+              <p><b>1.</b> Separe a velocidade inicial:</p>
+              <div class="eformula">Vx = V₀ · cos(θ)<br>Vy₀ = V₀ · sen(θ)</div>
+              <p><b>2.</b> Calcule o tempo até a bola voltar ao chão:</p>
+              <div class="eformula">t = [Vy₀ + √(Vy₀² + 2gh₀)] / g</div>
+              <p><b>3.</b> Use o movimento horizontal:</p>
+              <div class="eformula">R = Vx · t</div>
+              <p class="sandbox-note" id="labTipExample">Compare R com a distância até o buraco. A ideia é ajustar V₀ e θ, não decorar a resposta.</p>
+            </div>
+          </details>
+          <button class="btn" id="labVectorsBtn">Vetores: visíveis</button>
+          <button class="btn btn-next" id="labRetryBtn" style="display:none;">↻ Tentar novamente</button>
+          <button class="btn btn-next" id="labNextBtn" style="display:none;">Próximo desafio →</button>
+          <div class="lab-shot-box">Lançamentos restantes: <b id="labShotsOut">3</b></div>
+          <div class="hud">
+            <div class="cell"><div class="k">Pontos</div><div class="v" id="labPoints">0</div></div><div class="cell"><div class="k">Combo</div><div class="v" id="labCombo">x1</div></div>
+            <div class="cell"><div class="k">Desafio</div><div class="v" id="labNumber">#1</div></div><div class="cell"><div class="k">Gravidade</div><div class="v" id="labGravity">9.80</div></div>
+            <div class="cell"><div class="k">Vx / Vy</div><div class="v" id="labVelocity">—</div></div><div class="cell"><div class="k">Altura / distância</div><div class="v" id="labPosition">—</div></div>
+            <div class="cell"><div class="k">Tempo</div><div class="v" id="labTime">—</div></div><div class="cell"><div class="k">Melhor combo</div><div class="v" id="labBestCombo">x1</div></div>
+            <div class="cell"><div class="k">Distância do buraco</div><div class="v" id="labHoleDistance">—</div></div>
+          </div>
+        </div>
+        <div id="labPanelContent" style="display:none"></div>
+      </aside>
+    </div>
+  </div>
+
+</div>
+<script>(()=>{
+// Tracks, phases and journal definitions + track generation utilities
+const phases = [
+  {id:'p1', module:1, type:'uniform', T:3.0, target:180, tol:8,
+    title:'Acerte a linha de chegada', desc:'Ajuste a potência do motor. Ele fica ligado por um tempo fixo — descubra a potência certa para o carrinho parar exatamente sobre o alvo.'},
+  {id:'p2', module:1, type:'uniform', T:2.0, target:140, tol:6,
+    title:'Motor mais curto', desc:'O motor agora fica ligado por menos tempo. A mesma lógica se aplica — mas a potência necessária será diferente.'},
+  {id:'p3', module:1, type:'uniform', T:3.0, target:270, tol:10,
+    title:'Mesmo tempo, alvo mais distante', desc:'O motor liga pelo mesmo tempo da primeira fase, mas o alvo está bem mais longe. O que precisa mudar?'},
+  {id:'p4', module:1, type:'uniform', T:4.5, target:180, tol:8,
+    title:'Mesma distância, mais tempo', desc:'Repare: esta é a MESMA distância da fase 1. Só o tempo de motor ligado mudou. Isso muda a potência necessária?'},
+  {id:'p5', module:1, type:'uniform', T:2.5, target:225, tol:9,
+    title:'Corrida de precisão', desc:'Última fase do módulo. Combine tudo o que você percebeu sobre potência, tempo e distância.'},
+  {id:'p6', module:2, type:'muv', T:3.0, target:90, tol:6,
+    title:'Partida do repouso', desc:'O carrinho começa parado. O motor aplica uma aceleração constante por um tempo fixo. Ajuste a aceleração para parar no alvo.'},
+  {id:'p7', module:2, type:'muv', T:2.0, target:40, tol:4,
+    title:'Janela curta de aceleração', desc:'Menos tempo de motor ligado. Observe como a aceleração necessária se compara à fase anterior.'},
+  {id:'p8', module:2, type:'muv', T:3.0, target:180, tol:8,
+    title:'Alvo em dobro', desc:'Mesmo tempo de motor da fase 6, mas o alvo é o dobro da distância. Dobrar a aceleração é suficiente?'},
+  {id:'p9', module:2, type:'muv', T:1.5, target:45, tol:5,
+    title:'Rajada curta', desc:'Tempo de motor bem curto. Pequenas variações de tempo têm um efeito grande na distância final — por quê?'},
+  {id:'p10', module:2, type:'muv', T:4.0, target:80, tol:6,
+    title:'Prova final do módulo', desc:'Combine tudo que você aprendeu sobre aceleração e tempo para acertar este último alvo.'},
+  {id:'p11', module:3, type:'curve', target:45, tol:6,
+    title:'Vale Senoidal', desc:'O carrinho parte do fundo de um vale em forma de onda. Ajuste a velocidade de lançamento para ele subir a ladeira e parar exatamente sobre o alvo, antes de voltar.',
+    track:{ fn: x => -16*Math.cos(x/20),
+            fPrime: x => 0.8*Math.sin(x/20),
+            fDoublePrime: x => 0.04*Math.cos(x/20),
+            domain:[0,260], resolution:500, friction:0.04, gravity:14 }},
+  {id:'p12', module:3, type:'curve', target:85, tol:5,
+    title:'Poço Parabólico', desc:'Desta vez a pista é uma curva parabólica. O carrinho parte do fundo do poço — encontre a velocidade certa para ele subir a parede e parar sobre o alvo.',
+    track:{ fn: x => 0.02*(x-40)*(x-40),
+            fPrime: x => 0.04*(x-40),
+            fDoublePrime: x => 0.04,
+            domain:[40,100], resolution:400, friction:0.03, gravity:14 }},
+  {id:'p13', module:3, type:'curve', target:170, tol:8,
+    title:'Trem de Colinas', desc:'A mesma pista senoidal da fase anterior, mas o alvo está bem mais longe — depois de uma segunda colina. Quanta velocidade sobra depois de cruzar a primeira?',
+    track:{ fn: x => -16*Math.cos(x/20),
+            fPrime: x => 0.8*Math.sin(x/20),
+            fDoublePrime: x => 0.04*Math.cos(x/20),
+            domain:[0,260], resolution:500, friction:0.05, gravity:14 }},
+];
+
+const journal = [
+  {id:'j1', module:1, title:'Potência e Distância', need:['p1'],
+    text:'Com o motor ligado pelo mesmo tempo, mais potência leva o carrinho mais longe.'},
+  {id:'j2', module:1, title:'O papel do Tempo', need:['p1','p4'],
+    text:'Para a MESMA distância, um tempo de motor maior exige MENOS potência. Tempo e velocidade se compensam.'},
+  {id:'j3', module:1, title:'Fórmula Revelada', need:['p1','p2','p3','p4','p5'],
+    text:'Você descobriu, na prática, como distância, velocidade e tempo se relacionam no movimento uniforme.', formula:'d = v × t'},
+  {id:'j4', module:2, title:'Aceleração e Distância', need:['p6','p8'],
+    text:'No mesmo tempo de motor, dobrar a distância-alvo exige exatamente o dobro de aceleração.'},
+  {id:'j5', module:2, title:'O Tempo ao Quadrado', need:['p6','p7','p9'],
+    text:'Ao contrário do módulo 1, aqui pequenas mudanças no tempo de motor causam mudanças desproporcionais na distância. O tempo pesa mais do que parece.'},
+  {id:'j6', module:2, title:'Fórmula Revelada', need:['p6','p7','p8','p9','p10'],
+    text:'Você descobriu como aceleração e tempo se combinam para gerar distância no movimento acelerado.', formula:'d = ½ × a × t²'},
+  {id:'j7', module:3, title:'Energia se Transforma', need:['p11'],
+    text:'Subindo a ladeira, o carrinho perde velocidade — mas essa energia não desaparece, ela se transforma em altura.'},
+  {id:'j8', module:3, title:'Nem Toda Energia Volta', need:['p11','p12'],
+    text:'Com atrito, o carrinho não sobe tão alto quanto poderia sem perdas — parte da energia se dissipa ao longo do caminho percorrido, não apenas na altura alcançada.'},
+  {id:'j9', module:3, title:'Fórmula Revelada', need:['p11','p12','p13'],
+    text:'Você descobriu como velocidade e altura se equilibram em uma pista com inclinação variável.', formula:'E = ½v² + g·y'},
+];
+
+/* ---------------- Track utilities ---------------- */
+function numericDerivative(f, x, h){
+  h = h || 1e-4;
+  return (f(x+h) - f(x-h)) / (2*h);
+}
+function numericSecondDerivative(f, x, h){
+  h = h || 1e-3;
+  return (f(x+h) - 2*f(x) + f(x-h)) / (h*h);
+}
+
+function compileTrackExpression(expression){
+  const expr = String(expression || '').trim();
+  if(!expr) throw new Error('Track expression is empty.');
+
+  let sanitized = expr.replace(/\s+/g, '');
+  sanitized = sanitized.replace(/\^/g, '**');
+  sanitized = sanitized.replace(/\bpi\b/gi, 'Math.PI');
+  sanitized = sanitized.replace(/\be\b/gi, 'Math.E');
+  sanitized = sanitized.replace(/\bsin\b/gi, 'Math.sin');
+  sanitized = sanitized.replace(/\bcos\b/gi, 'Math.cos');
+  sanitized = sanitized.replace(/\btan\b/gi, 'Math.tan');
+  sanitized = sanitized.replace(/\basin\b/gi, 'Math.asin');
+  sanitized = sanitized.replace(/\bacos\b/gi, 'Math.acos');
+  sanitized = sanitized.replace(/\batan\b/gi, 'Math.atan');
+  sanitized = sanitized.replace(/\bsinh\b/gi, 'Math.sinh');
+  sanitized = sanitized.replace(/\bcosh\b/gi, 'Math.cosh');
+  sanitized = sanitized.replace(/\btanh\b/gi, 'Math.tanh');
+  sanitized = sanitized.replace(/\babs\b/gi, 'Math.abs');
+  sanitized = sanitized.replace(/\bsqrt\b/gi, 'Math.sqrt');
+  sanitized = sanitized.replace(/\bexp\b/gi, 'Math.exp');
+  sanitized = sanitized.replace(/\blog\b/gi, 'Math.log');
+  sanitized = sanitized.replace(/\bpow\b/gi, 'Math.pow');
+  sanitized = sanitized.replace(/\bmin\b/gi, 'Math.min');
+  sanitized = sanitized.replace(/\bmax\b/gi, 'Math.max');
+  sanitized = sanitized.replace(/\bfloor\b/gi, 'Math.floor');
+  sanitized = sanitized.replace(/\bceil\b/gi, 'Math.ceil');
+  sanitized = sanitized.replace(/\bround\b/gi, 'Math.round');
+  sanitized = sanitized.replace(/\bsign\b/gi, 'Math.sign');
+
+  return new Function('x', `return ${sanitized};`);
+}
+
+function normalizeTrackDefinition(track){
+  if(!track || typeof track !== 'object') return track;
+
+  const normalized = { ...track };
+  if(typeof normalized.expression === 'string' && normalized.expression.trim()){
+    const fn = compileTrackExpression(normalized.expression);
+    normalized.fn = fn;
+    normalized.fPrime = (x) => numericDerivative(fn, x);
+    normalized.fDoublePrime = (x) => numericSecondDerivative(fn, x);
+  }
+
+  return normalized;
+}
+
+// Simpson arc length helper
+function simpsonArcLength(fPrime, a, b, n){
+  n = n || 4;
+  const h = (b-a)/n;
+  const g = (x) => Math.sqrt(1 + fPrime(x)*fPrime(x));
+  let sum = g(a) + g(b);
+  for(let i=1;i<n;i++){
+    sum += (i % 2 === 0 ? 2 : 4) * g(a + i*h);
+  }
+  return (h/3) * sum;
+}
+
+function buildTrackFromFunction(fn, domain, resolution, fPrimeAnalytic, fDoublePrimeAnalytic){
+  const fPrime = fPrimeAnalytic || ((x) => numericDerivative(fn, x));
+  const fDoublePrime = fDoublePrimeAnalytic || ((x) => numericSecondDerivative(fn, x));
+
+  const points = [];
+  const dx = (domain[1]-domain[0]) / resolution;
+  let arcAcc = 0;
+  for(let i=0;i<=resolution;i++){
+    const x = domain[0] + i*dx;
+    const y = fn(x);
+    const slope = fPrime(x);
+    const theta = Math.atan(slope);
+    const d2 = fDoublePrime(x);
+    const curvature = Math.abs(d2) / Math.pow(1 + slope*slope, 1.5);
+    if(i>0){
+      arcAcc += simpsonArcLength(fPrime, points[i-1].x, x, 4);
+    }
+    points.push({x, y, slope, theta, curvature, arcLength: arcAcc});
+  }
+  let minY = Infinity, maxY = -Infinity;
+  for(const p of points){ if(p.y<minY) minY=p.y; if(p.y>maxY) maxY=p.y; }
+  return {points, totalLength: arcAcc, minY, maxY};
+}
+
+function pointAtArcLength(track, s){
+  const pts = track.points;
+  if(s<=0) return pts[0];
+  if(s>=track.totalLength) return pts[pts.length-1];
+  let lo=0, hi=pts.length-1;
+  while(hi-lo>1){
+    const mid=(lo+hi)>>1;
+    if(pts[mid].arcLength < s) lo=mid; else hi=mid;
+  }
+  const a=pts[lo], b=pts[hi];
+  const span = (b.arcLength-a.arcLength) || 1;
+  const t = (s-a.arcLength)/span;
+  return {
+    x: a.x + (b.x-a.x)*t,
+    y: a.y + (b.y-a.y)*t,
+    slope: a.slope + (b.slope-a.slope)*t,
+    theta: a.theta + (b.theta-a.theta)*t,
+    curvature: a.curvature + (b.curvature-a.curvature)*t,
+    arcLength: s
+  };
+}
+
+function arcLengthAtX(track, x){
+  const pts = track.points;
+  for(let i=1;i<pts.length;i++){
+    if(pts[i].x >= x) return pts[i].arcLength;
+  }
+  return pts[pts.length-1].arcLength;
+}
+
+const trackCache = new Map();
+function getTrackCacheKey(phase){
+  const track = phase && phase.track ? phase.track : null;
+  const expression = track && typeof track.expression === 'string' ? track.expression.trim() : '';
+  return expression ? `${phase.id}:${expression}` : phase.id;
+}
+
+function getTrack(phase){
+  const cacheKey = getTrackCacheKey(phase);
+  if(!trackCache.has(cacheKey)){
+    const t = normalizeTrackDefinition(phase.track);
+    trackCache.set(cacheKey, buildTrackFromFunction(t.fn, t.domain, t.resolution || 400, t.fPrime, t.fDoublePrime));
+  }
+  return trackCache.get(cacheKey);
+}
+
+function computeDistanceAt(phase,t,param){const clampedT=Math.min(t,phase.T);return phase.type==='uniform'?param*clampedT:0.5*param*clampedT*clampedT;}
+function finalVelocity(phase,param){return phase.type==='uniform'?param:param*phase.T;}
+function stepAlongCurve(track,s,v,dt,g,mu){const pt=pointAtArcLength(track,s);const theta=pt.theta;const aGravity=-g*Math.sin(theta);const aFriction=(Math.abs(v)>1e-4)?-mu*g*Math.cos(theta)*Math.sign(v):0;const aTotal=aGravity+aFriction;let vNew=v+aTotal*dt;let sNew=s+vNew*dt;if(sNew<0){sNew=0;vNew=0;}if(sNew>track.totalLength){sNew=track.totalLength;vNew=0;}return{s:sNew,v:vNew};}
+function trackNormalForce(g,theta,v,curvature,concaveUp){return concaveUp?g*Math.cos(theta)+v*v*curvature:g*Math.cos(theta)-v*v*curvature;}
+function createNormalizedTrackFromExpression(expression,start,end,resolution,friction,gravity){if(!expression)throw new Error('Expressão inválida');const trackDefinition={expression,domain:[start,end],resolution,friction,gravity};return normalizeTrackDefinition(trackDefinition);}
+// DEBUG flag removed
+
+let state = {
+  phaseIndex: 0,
+  attempts: 0,
+  completed: new Set(),
+  score: 0,
+  ghost: null,
+  prediction: null,
+  lastPredictionEvaluation: null,
+  running: false,
+};
+
+const el = id => document.getElementById(id);
+let canvas, ctx, paramSlider, paramReadout, runBtn, nextBtn, feedback;
+let phaseTag, phaseTitle, phaseDesc, attemptsValue, fixedTimeValue, lastDistance, lastPrecision, scoreValue, journalGrid;
+
+let sbCanvas, sbCtx, sbParamSlider, sbParamReadout, sbTimeSlider, sbTimeReadout;
+let sbModeUniform, sbModeMuv, sbModeMath, sbRunBtn, sbFeedback;
+let mathSandboxPanel, mathExprInput, mathDomainStart, mathDomainEnd, mathResolution, mathFriction, mathGravity, mathGenerateBtn, mathSandboxFeedback, mathExampleButtons;
+let sbMode = 'uniform', sbRunning = false, mathSandboxPhase = null;
+let mathSandboxDrop = { active:false, startTime:0, duration:520, fromOffset:46, raf:null };
+
+
+function currentPhase(){ return phases[state.phaseIndex]; }
+
+/* Movimento oblíquo: ângulos chegam em graus pela interface e são convertidos aqui. */
+function computeProjectileState(phase, speed, angle, time){
+  const rad = angle * Math.PI / 180;
+  const vx = speed * Math.cos(rad);
+  const vy0 = speed * Math.sin(rad);
+  const vy = vy0 - phase.gravity * time;
+  return {x:vx*time, y:phase.initialHeight + vy0*time - .5*phase.gravity*time*time, vx, vy0, vy, speed:Math.hypot(vx,vy)};
+}
+function computeProjectileFlightTime(phase, speed, angle){
+  const rad = angle * Math.PI / 180, vy0 = speed*Math.sin(rad), y0 = phase.initialHeight || 0;
+  return (vy0 + Math.sqrt(Math.max(0, vy0*vy0 + 2*phase.gravity*y0))) / phase.gravity;
+}
+function computeProjectileMaxHeight(phase, speed, angle){
+  const rad = angle * Math.PI / 180, vy0 = speed*Math.sin(rad);
+  return (phase.initialHeight || 0) + vy0*vy0/(2*phase.gravity);
+}
+function computeProjectileRange(phase, speed, angle){
+  return computeProjectileState(phase, speed, angle, computeProjectileFlightTime(phase,speed,angle)).x;
+}
+
+function evaluatePrediction(predicted, actual, reference){
+  const safeReference = Math.max(Math.abs(reference) || 1, 1);
+  const absoluteError = Math.abs(actual - predicted);
+  const relativeError = (absoluteError / safeReference) * 100;
+  const accuracy = Math.max(0, 100 - relativeError);
+
+  return {
+    predicted,
+    actual,
+    absoluteError,
+    relativeError,
+    accuracy,
+  };
+}
+
+// ui module loaded
+
+function trackMax(phase){ return Math.max(phase.target * 1.45, 60); }
+
+function getPredictionForCurrentPhase(phase){
+  if(!state.prediction || state.prediction.phaseId !== phase.id) return null;
+  return state.prediction.distance;
+}
+
+function clampPredictionDistance(phase, distance){
+  if(phase.track){
+    const track = getTrack(phase);
+    return Math.min(Math.max(distance, 0), track.totalLength);
+  }
+  return Math.min(Math.max(distance, 0), trackMax(phase) * 1.08);
+}
+
+function resolutionFromPointer(phase, event){
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.min(Math.max(event.clientX - rect.left, 0), rect.width);
+  const ratio = x / rect.width;
+
+  if(phase.track){
+    const track = getTrack(phase);
+    return ratio * track.totalLength;
+  }
+
+  return ratio * trackMax(phase) * 1.08;
+}
+
+function drawPredictionMarker(context, cnv, phase, predictionDistance){
+  if(predictionDistance === null || predictionDistance === undefined) return;
+
+  if(phase.track){
+    const track = getTrack(phase);
+    const pt = pointAtArcLength(track, predictionDistance);
+    const {px, py} = curveScale(cnv, phase, track).toPixel(pt);
+    context.save();
+    context.translate(px, py);
+    context.fillStyle = 'rgba(139, 92, 246, 0.96)';
+    context.strokeStyle = 'rgba(255,255,255,0.9)';
+    context.lineWidth = 2;
+    context.beginPath();
+    context.moveTo(0, -10);
+    context.lineTo(9, 0);
+    context.lineTo(0, 10);
+    context.lineTo(-9, 0);
+    context.closePath();
+    context.fill();
+    context.stroke();
+    context.restore();
+    return;
+  }
+
+  const W = cnv.width, H = cnv.height;
+  const margin = 40;
+  const usableW = W - margin*2;
+  const maxU = trackMax(phase);
+  const scale = usableW / maxU;
+  const baseY = H - 55;
+  const x = margin + Math.min(predictionDistance, maxU*1.08) * scale;
+
+  context.save();
+  context.translate(x, baseY - 26);
+  context.fillStyle = 'rgba(139, 92, 246, 0.96)';
+  context.strokeStyle = 'rgba(255,255,255,0.9)';
+  context.lineWidth = 2;
+  context.beginPath();
+  context.moveTo(0, -10);
+  context.lineTo(9, 0);
+  context.lineTo(0, 10);
+  context.lineTo(-9, 0);
+  context.closePath();
+  context.fill();
+  context.stroke();
+  context.restore();
+}
+
+function syncSliderFill(slider){
+  const pct = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+  slider.style.setProperty('--pct', pct + '%');
+}
+
+function clamp(value, min, max){
+  return Math.min(Math.max(value, min), max);
+}
+
+function updateParamUI(){
+  const phase = currentPhase();
+  if(phase.type === 'curve'){
+    el('controlLabel').textContent = 'Velocidade de Lançamento (unid/s)';
+    paramSlider.min = 0;
+    paramSlider.max = 50;
+    paramSlider.step = 0.2;
+    if(paramSlider.value > paramSlider.max) paramSlider.value = paramSlider.max/3;
+    syncSliderFill(paramSlider);
+    paramReadout.textContent = parseFloat(paramSlider.value).toFixed(1);
+    return;
+  }
+  el('controlLabel').textContent = phase.type === 'uniform' ? 'Potência do Motor (unid/s)' : 'Aceleração do Motor (unid/s²)';
+  paramSlider.min = 0;
+  paramSlider.max = phase.type === 'uniform' ? 120 : 60;
+  paramSlider.step = 0.5;
+  if(paramSlider.value > paramSlider.max) paramSlider.value = paramSlider.max/3;
+  syncSliderFill(paramSlider);
+  paramReadout.textContent = parseFloat(paramSlider.value).toFixed(1);
+}
+
+function drawArrow(context,x1,y1,x2,y2,color,label){
+  const a=Math.atan2(y2-y1,x2-x1); context.strokeStyle=color; context.fillStyle=color; context.lineWidth=2;
+  context.beginPath(); context.moveTo(x1,y1); context.lineTo(x2,y2); context.stroke();
+  context.beginPath(); context.moveTo(x2,y2); context.lineTo(x2-7*Math.cos(a-.45),y2-7*Math.sin(a-.45)); context.lineTo(x2-7*Math.cos(a+.45),y2-7*Math.sin(a+.45)); context.closePath(); context.fill();
+  if(label){ context.font='10px monospace'; context.fillText(label,x2+5,y2-4); }
+}
+function drawScene(context, cnv, phase, carUnits, ghostUnits, revealDistance){
+  if(phase.track){
+    const track = getTrack(phase);
+    drawCurveScene(context, cnv, phase, track, carUnits, ghostUnits, revealDistance);
+    return;
+  }
+  const predictionDistance = getPredictionForCurrentPhase(phase);
+  const W = cnv.width, H = cnv.height;
+  const margin = 40;
+  const usableW = W - margin*2;
+  const maxU = trackMax(phase);
+  const scale = usableW / maxU;
+  const baseY = H - 55;
+
+  context.clearRect(0,0,W,H);
+
+  // track line
+  context.strokeStyle = 'rgba(124,147,172,0.35)';
+  context.lineWidth = 2;
+  context.beginPath();
+  context.moveTo(margin, baseY);
+  context.lineTo(W-margin, baseY);
+  context.stroke();
+
+  // tick marks
+  context.font = '10px JetBrains Mono, monospace';
+  context.fillStyle = 'rgba(124,147,172,0.5)';
+  for(let u=0; u<=maxU; u += maxU/8){
+    const x = margin + u*scale;
+    context.beginPath();
+    context.moveTo(x, baseY-4); context.lineTo(x, baseY+4);
+    context.strokeStyle = 'rgba(124,147,172,0.25)';
+    context.stroke();
+  }
+
+  // start marker
+  context.fillStyle = '#7C93AC';
+  context.fillRect(margin-2, baseY-14, 4, 14);
+  context.fillText('LARGADA', margin-4, baseY+30);
+
+  // target zone
+  const tX = margin + phase.target*scale;
+  const tolPx = phase.tol*scale;
+  context.fillStyle = 'rgba(242,193,78,0.15)';
+  context.fillRect(tX-tolPx, baseY-40, tolPx*2, 40);
+  context.strokeStyle = '#F2C14E';
+  context.setLineDash([4,3]);
+  context.beginPath();
+  context.moveTo(tX, baseY-44); context.lineTo(tX, baseY+8);
+  context.stroke();
+  context.setLineDash([]);
+  context.fillStyle = '#F2C14E';
+  context.font = '11px Oswald, sans-serif';
+  context.fillText('ALVO', tX-12, baseY-48);
+
+  if(revealDistance){
+    context.fillStyle = '#4FD1E8';
+    context.font = '11px JetBrains Mono, monospace';
+    context.fillText(phase.target + ' un', tX-14, baseY+44);
+  }
+
+  // ghost
+  if(ghostUnits !== null && ghostUnits !== undefined){
+    drawCar(context, margin+ghostUnits*scale, baseY, 'rgba(79,209,232,0.35)', 'rgba(79,209,232,0.6)');
+  }
+
+  if(predictionDistance !== null && predictionDistance !== undefined){
+    drawPredictionMarker(context, cnv, phase, predictionDistance);
+  }
+
+  // active car
+  drawCar(context, margin+Math.min(carUnits,trackMax(phase)*1.08)*scale, baseY, '#FF5A1F', '#1a0a03');
+}
+
+function drawCar(context, x, baseY, bodyColor, wheelColor, angle){
+  angle = Number.isFinite(angle) ? angle : 0;
+  context.save();
+  context.translate(x, baseY);
+  // A tangente usada no Canvas é medida no mesmo referencial da pista:
+  // +angle significa que a pista sobe visualmente para a direita (eixo Y para baixo).
+  // Portanto o carro deve rotacionar no MESMO sentido do ângulo da tangente.
+  if(angle) context.rotate(angle);
+  context.fillStyle = bodyColor;
+  roundRect(context, -16, -16, 32, 12, 3);
+  context.fill();
+  roundRect(context, -10, -22, 18, 8, 2);
+  context.fill();
+  context.fillStyle = wheelColor;
+  context.beginPath(); context.arc(-9, -3, 5, 0, Math.PI*2); context.fill();
+  context.beginPath(); context.arc(9, -3, 5, 0, Math.PI*2); context.fill();
+  context.restore();
+}
+function roundRect(context, x, y, w, h, r){
+  context.beginPath();
+  context.moveTo(x+r,y);
+  context.arcTo(x+w,y,x+w,y+h,r);
+  context.arcTo(x+w,y+h,x,y+h,r);
+  context.arcTo(x,y+h,x,y,r);
+  context.arcTo(x,y,x+w,y,r);
+  context.closePath();
+}
+
+function curveScale(cnv, phase, track){
+  const W = cnv.width, H = cnv.height;
+  const marginX = 40, marginTop = 55, marginBottom = 55;
+  const domainSpan = phase.track.domain[1] - phase.track.domain[0];
+  const ySpan = Math.max(track.maxY - track.minY, 1);
+  const scaleX = (W - marginX*2) / domainSpan;
+  const scaleY = (H - marginTop - marginBottom) / ySpan;
+  const toPixel = (pt) => ({
+    px: marginX + (pt.x - phase.track.domain[0]) * scaleX,
+    py: H - marginBottom - (pt.y - track.minY) * scaleY
+  });
+  return {toPixel, marginX, marginTop, marginBottom};
+}
+
+function drawCurveScene(context, cnv, phase, track, sCar, sGhost, revealDistance){
+  const W = cnv.width, H = cnv.height;
+  const {toPixel} = curveScale(cnv, phase, track);
+  const predictionDistance = getPredictionForCurrentPhase(phase);
+  context.clearRect(0,0,W,H);
+
+  context.beginPath();
+  track.points.forEach((p,i)=>{
+    const {px,py} = toPixel(p);
+    if(i===0) context.moveTo(px,py); else context.lineTo(px,py);
+  });
+  context.strokeStyle = 'rgba(79,209,232,0.55)';
+  context.lineWidth = 3;
+  context.stroke();
+
+  function tangentAngleAt(trackPath, sValue){
+    const delta = Math.max(trackPath.totalLength / Math.max(trackPath.points.length, 200), 0.02);
+    const prev = pointAtArcLength(trackPath, Math.max(0, sValue - delta));
+    const next = pointAtArcLength(trackPath, Math.min(trackPath.totalLength, sValue + delta));
+    const prevPx = toPixel(prev), nextPx = toPixel(next);
+    return Math.atan2(nextPx.py - prevPx.py, nextPx.px - prevPx.px);
+  }
+
+  function carAnchor(trackPath, sValue){
+    const point = pointAtArcLength(trackPath, sValue);
+    const pix = toPixel(point);
+    const angle = tangentAngleAt(trackPath, sValue);
+
+    // O ponto da pista representa o contato com o solo.
+    // O carro é ancorado pela normal para o lado de cima da pista,
+    // mantendo as rodas visualmente apoiadas em vez de atravessar a linha.
+    // Normal da superfície apontando para o lado de cima da pista.
+    // Não inverter a normal com base em ny: isso quebrava a orientação em
+    // trechos inclinados e fazia o carro atravessar/ficar preso na pista.
+    const nx = Math.sin(angle);
+    const ny = -Math.cos(angle);
+
+    // No desenho do carro, o centro das rodas fica 3 px acima da origem
+    // e o raio é 5 px. Assim, 2 px de deslocamento da origem pela normal
+    // faz a parte inferior das rodas tocar a superfície da pista.
+    const restGap = 2;
+    let spawnGap = 0;
+
+    // No Sandbox Matemático, o carro nasce acima da pista e cai pela normal local.
+    // Isso é uma animação visual de assentamento; não altera a física da pista.
+    if(sbMode === 'math' && mathSandboxDrop.active && sValue === 0){
+      const elapsed = performance.now() - mathSandboxDrop.startTime;
+      const t = Math.min(1, Math.max(0, elapsed / mathSandboxDrop.duration));
+      // ease-out com pequeno amortecimento no final.
+      const e = 1 - Math.pow(1 - t, 3);
+      const bounce = t < 0.78 ? 0 : Math.sin((t - 0.78) / 0.22 * Math.PI) * 2.5 * (1 - t);
+      spawnGap = Math.max(0, mathSandboxDrop.fromOffset * (1 - e) + bounce);
+    }
+
+    const gap = restGap + spawnGap;
+    return {
+      x: pix.px + nx * gap,
+      y: pix.py + ny * gap,
+      angle
+    };
+  }
+
+  const startPt = toPixel(track.points[0]);
+  context.fillStyle = '#7C93AC';
+  context.fillRect(startPt.px-2, startPt.py-14, 4, 14);
+  context.font = '11px Oswald, sans-serif';
+  context.fillText('LARGADA', startPt.px-4, startPt.py+28);
+
+  const targetPoint = pointAtArcLength(track, arcLengthAtX(track, phase.target));
+  const tPix = toPixel(targetPoint);
+  context.strokeStyle = '#F2C14E';
+  context.setLineDash([4,3]);
+  context.beginPath();
+  context.moveTo(tPix.px, tPix.py-40);
+  context.lineTo(tPix.px, tPix.py+8);
+  context.stroke();
+  context.setLineDash([]);
+  context.fillStyle = '#F2C14E';
+  context.fillText('ALVO', tPix.px-12, tPix.py-44);
+  if(revealDistance){
+    context.fillStyle = '#4FD1E8';
+    context.font = '11px JetBrains Mono, monospace';
+    context.fillText(phase.target + ' un', tPix.px-14, tPix.py+22);
+  }
+
+  if(sGhost !== null && sGhost !== undefined){
+    const ghost = carAnchor(track, sGhost);
+    drawCar(context, ghost.x, ghost.y, 'rgba(79,209,232,0.35)', 'rgba(79,209,232,0.6)', ghost.angle);
+  }
+
+  if(predictionDistance !== null && predictionDistance !== undefined){
+    drawPredictionMarker(context, cnv, phase, predictionDistance);
+  }
+
+  const car = carAnchor(track, sCar);
+  drawCar(context, car.x, car.y, '#FF5A1F', '#1a0a03', car.angle);
+}
+function runCurveSimulation(phase, param, context, cnv, ghostPoints, onDone){
+  const track = getTrack(phase);
+  const dt = 1/60;
+  let s = 0, v = param, prevV = v, frameCount = 0;
+  const points = [];
+  const maxFrames = 600;
+
+  function frame(){
+    const result = stepAlongCurve(track, s, v, dt, phase.track.gravity, phase.track.friction);
+    prevV = v; s = result.s; v = result.v;
+    points.push({t: frameCount*dt, s});
+
+    let ghostS = null;
+    if(ghostPoints && ghostPoints.length){
+      const idx = Math.min(frameCount, ghostPoints.length-1);
+      ghostS = ghostPoints[idx] ? ghostPoints[idx].s : null;
+    }
+
+    frameCount++;
+    const turnedAround = prevV > 0 && v <= 0;
+    const stuckAtStart = frameCount > 90 && Math.abs(v) < 0.015;
+    const hitBoundary = s<=0 || s>=track.totalLength;
+
+      if(frameCount>3 && (turnedAround || stuckAtStart || hitBoundary || frameCount>=maxFrames)){
+        drawCurveScene(context, cnv, phase, track, s, ghostS, true);
+        const finalPoint = pointAtArcLength(track, s);
+        onDone(finalPoint.x, points);
+        return;
+      }
+    drawCurveScene(context, cnv, phase, track, s, ghostS, false);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function runSimulation(phase, param, context, cnv, ghostPoints, onDone){
+  if(phase.track){
+    return runCurveSimulation(phase, param, context, cnv, ghostPoints, onDone);
+  }
+  const duration = phase.T;
+  const finalDist = computeDistanceAt(phase, duration, param);
+  const startTime = performance.now();
+  const points = [];
+  const animDuration = Math.min(Math.max(duration, 1.2), 4.5) * 1000;
+
+  function frame(now){
+    const elapsedMs = now - startTime;
+    const simT = Math.min((elapsedMs/animDuration) * duration, duration);
+    const carUnits = computeDistanceAt(phase, simT, param);
+    points.push({t:simT, x:carUnits});
+
+    let ghostUnits = null;
+    if(ghostPoints && ghostPoints.length){
+      const frac = simT/duration;
+      const idx = Math.min(Math.floor(frac*(ghostPoints.length-1)), ghostPoints.length-1);
+      ghostUnits = ghostPoints[idx] ? ghostPoints[idx].x : null;
+    }
+
+    drawScene(context, cnv, phase, carUnits, ghostUnits, false);
+
+    if(elapsedMs < animDuration){
+      requestAnimationFrame(frame);
+      } else {
+      drawScene(context, cnv, phase, finalDist, ghostUnits, true);
+      onDone(finalDist, points);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+function renderJournal(){
+  journalGrid.innerHTML = '';
+  journal.forEach(entry => {
+    const unlocked = entry.need.every(id => state.completed.has(id));
+    const div = document.createElement('div');
+    div.className = 'entry ' + (unlocked ? 'unlocked' : 'locked');
+    div.innerHTML = `
+      <div class="etitle">${unlocked ? entry.title : '???'}</div>
+      <div class="etext">${unlocked ? entry.text : 'Continue jogando para desbloquear esta descoberta.'}</div>
+      ${unlocked && entry.formula ? `<div class="eformula">${entry.formula}</div>` : ''}
+    `;
+    journalGrid.appendChild(div);
+  });
+}
+
+function loadPhase(idx){
+  state.phaseIndex = idx;
+  state.attempts = 0;
+  state.ghost = null;
+  state.prediction = null;
+  state.lastPredictionEvaluation = null;
+  const phase = currentPhase();
+  if(phase.track){
+    phase.track = normalizeTrackDefinition(phase.track);
+  }
+  phaseTag.textContent = `FASE ${idx+1} · MÓDULO ${phase.module}`;
+  phaseTitle.textContent = phase.title;
+  phaseDesc.textContent = phase.desc;
+  if(phase.track){
+    el('fixedTimeLabel').textContent = 'Atrito da pista';
+    fixedTimeValue.textContent = phase.track.friction.toFixed(2);
+  } else {
+    el('fixedTimeLabel').textContent = 'Tempo de motor ligado';
+    fixedTimeValue.textContent = phase.T.toFixed(1) + 's';
+  }
+  attemptsValue.textContent = '0';
+  lastDistance.textContent = '—';
+  lastPrecision.textContent = '—';
+  feedback.className = 'feedback';
+  feedback.textContent = 'Ajuste os parâmetros e execute o teste.';
+  nextBtn.disabled = true;
+  runBtn.disabled = false;
+  updateParamUI();
+  drawScene(ctx, canvas, phase, 0, null);
+}
+
+function attemptRun(){
+  if(state.running) return;
+  const phase = currentPhase();
+  const param = parseFloat(paramSlider.value);
+  const predictionDistance = getPredictionForCurrentPhase(phase);
+
+  if(predictionDistance === null || predictionDistance === undefined){
+    feedback.className = 'feedback';
+    feedback.textContent = 'Posicione a previsão na pista antes de executar o teste.';
+    return;
+  }
+
+  state.running = true;
+  runBtn.disabled = true;
+  feedback.className = 'feedback';
+  feedback.textContent = 'Executando teste...';
+
+  runSimulation(phase, param, ctx, canvas, state.ghost ? state.ghost.points : null, (finalDist, points) => {
+    state.running = false;
+    runBtn.disabled = false;
+    state.attempts++;
+    attemptsValue.textContent = state.attempts;
+    state.ghost = {points};
+
+    const predictionEval = evaluatePrediction(predictionDistance, finalDist, phase.target);
+    state.lastPredictionEvaluation = predictionEval;
+
+    const diff = finalDist - phase.target;
+    const within = Math.abs(diff) <= phase.tol;
+    const precisionPct = Math.max(0, 100 - Math.abs(diff)/phase.target*100);
+
+    const unit = ' un';
+    lastDistance.textContent = finalDist.toFixed(1) + unit;
+    lastPrecision.textContent = precisionPct.toFixed(0) + '%';
+
+    const qualityText = predictionEval.accuracy >= 90
+      ? 'Boa previsão.'
+      : predictionEval.accuracy >= 60
+      ? 'Previsão aceitável.'
+      : 'Sua previsão ficou distante do resultado.';
+
+    if(within){
+      feedback.className = 'feedback success';
+      feedback.textContent = `Você previu: ${predictionEval.predicted.toFixed(1)}${unit}\nResultado: ${predictionEval.actual.toFixed(1)}${unit}\nErro: ${predictionEval.absoluteError.toFixed(1)}${unit}\n${qualityText}\nAlvo atingido!`;
+      if(!state.completed.has(phase.id)){
+        state.completed.add(phase.id);
+        const attemptPenalty = Math.max(0, (state.attempts-1))*3;
+        const points = Math.round(60 + precisionPct*0.6 - attemptPenalty);
+        state.score += Math.max(points, 10);
+        scoreValue.textContent = state.score;
+        renderJournal();
+      }
+      nextBtn.disabled = false;
+    } else if(diff < 0){
+      feedback.className = 'feedback short';
+      feedback.textContent = `${phase.type === 'uniform'
+        ? 'O carrinho parou antes do alvo.'
+        : phase.type === 'muv'
+        ? 'O carrinho parou antes do alvo.'
+        : 'O carrinho não chegou ao alvo.'} Você previu: ${predictionEval.predicted.toFixed(1)} un. Resultado: ${predictionEval.actual.toFixed(1)} un. Erro: ${predictionEval.absoluteError.toFixed(1)} un. ${qualityText}`;
+    } else {
+      feedback.className = 'feedback over';
+      feedback.textContent = `${phase.type === 'uniform'
+        ? 'O carrinho ultrapassou o alvo.'
+        : phase.type === 'muv'
+        ? 'O carrinho ultrapassou o alvo.'
+        : 'O carrinho passou do alvo antes de começar a voltar.'} Você previu: ${predictionEval.predicted.toFixed(1)} un. Resultado: ${predictionEval.actual.toFixed(1)} un. Erro: ${predictionEval.absoluteError.toFixed(1)} un. ${qualityText}`;
+    }
+  });
+}
+
+function setMathSandboxFeedback(message, isError){
+  mathSandboxFeedback.textContent = message;
+  mathSandboxFeedback.className = isError ? 'feedback over' : 'feedback success';
+}
+
+function sbPseudoPhase(){
+  const T = parseFloat(sbTimeSlider.value);
+  const param = parseFloat(sbParamSlider.value);
+  const previewMax = sbMode === 'uniform' ? param*T : 0.5*param*T*T;
+  return {type: sbMode, T, target: Math.max(previewMax,1), tol:0};
+}
+
+function startMathSandboxDrop(){
+  if(mathSandboxDrop.raf){
+    cancelAnimationFrame(mathSandboxDrop.raf);
+  }
+  mathSandboxDrop.active = true;
+  mathSandboxDrop.startTime = performance.now();
+  const tick = () => {
+    if(!mathSandboxDrop.active || sbMode !== 'math' || !mathSandboxPhase){
+      mathSandboxDrop.raf = null;
+      return;
+    }
+    drawScene(sbCtx, sbCanvas, mathSandboxPhase, 0, null, false);
+    if(performance.now() - mathSandboxDrop.startTime < mathSandboxDrop.duration){
+      mathSandboxDrop.raf = requestAnimationFrame(tick);
+    } else {
+      mathSandboxDrop.active = false;
+      mathSandboxDrop.raf = null;
+      drawScene(sbCtx, sbCanvas, mathSandboxPhase, 0, null, false);
+    }
+  };
+  mathSandboxDrop.raf = requestAnimationFrame(tick);
+}
+
+function generateMathSandboxTrack_local(){
+  const expression = mathExprInput.value.trim();
+  const start = parseFloat(mathDomainStart.value);
+  const end = parseFloat(mathDomainEnd.value);
+  const resolution = parseInt(mathResolution.value, 10);
+  const friction = parseFloat(mathFriction.value);
+  const gravity = parseFloat(mathGravity.value);
+
+  if(!expression){
+    setMathSandboxFeedback('Expressão inválida', true);
+    return;
+  }
+  if(!Number.isFinite(start) || !Number.isFinite(end) || end <= start){
+    setMathSandboxFeedback('Domínio inválido', true);
+    return;
+  }
+  if(!Number.isFinite(resolution) || resolution < 100){
+    setMathSandboxFeedback('Resolução inválida', true);
+    return;
+  }
+  if(!Number.isFinite(friction) || !Number.isFinite(gravity)){
+    setMathSandboxFeedback('Atrito ou gravidade inválidos', true);
+    return;
+  }
+
+  try{
+    const normalized = createNormalizedTrackFromExpression(expression, start, end, resolution, friction, gravity);
+    trackCache.clear();
+    mathSandboxPhase = {
+      id:'sandbox-math',
+      type:'curve',
+      target: start + (end-start)*0.5,
+      tol:0,
+      track: normalized
+    };
+    drawScene(sbCtx, sbCanvas, mathSandboxPhase, 0, null, false);
+    startMathSandboxDrop();
+    sbFeedback.textContent = 'Pista matemática gerada.';
+    sbFeedback.className = 'feedback success';
+    setMathSandboxFeedback('Pista gerada com sucesso.', false);
+    state.ghost = null;
+    state.attempts = 0;
+    el('sbDistance').textContent = '—';
+    el('sbVel').textContent = '—';
+  } catch(err){
+    setMathSandboxFeedback('Expressão inválida', true);
+    sbFeedback.textContent = 'Expressão inválida';
+    sbFeedback.className = 'feedback over';
+  }
+}
+
+function updateSbUI(){
+  if(sbMode === 'math'){
+    mathSandboxPanel.style.display = '';
+    sbParamSlider.min = 0;
+    sbParamSlider.max = 50;
+    sbParamSlider.step = 0.2;
+    if(sbParamSlider.value > sbParamSlider.max) sbParamSlider.value = 10;
+    el('sbParamLabel').textContent = 'Velocidade de Lançamento (unid/s)';
+    syncSliderFill(sbParamSlider);
+    sbParamReadout.textContent = parseFloat(sbParamSlider.value).toFixed(1);
+    syncSliderFill(sbTimeSlider);
+    sbTimeReadout.textContent = parseFloat(sbTimeSlider.value).toFixed(1)+'s';
+    if(mathSandboxPhase){
+      drawScene(sbCtx, sbCanvas, mathSandboxPhase, 0, null, false);
+    } else {
+      generateMathSandboxTrack_local();
+    }
+    return;
+  }
+
+  mathSandboxPanel.style.display = 'none';
+  sbParamSlider.max = sbMode === 'uniform' ? 120 : 60;
+  if(sbParamSlider.value > sbParamSlider.max) sbParamSlider.value = sbParamSlider.max/3;
+  el('sbParamLabel').textContent = sbMode === 'uniform' ? 'Potência do Motor (unid/s)' : 'Aceleração do Motor (unid/s²)';
+  syncSliderFill(sbParamSlider);
+  sbParamReadout.textContent = parseFloat(sbParamSlider.value).toFixed(1);
+  syncSliderFill(sbTimeSlider);
+  sbTimeReadout.textContent = parseFloat(sbTimeSlider.value).toFixed(1)+'s';
+
+  const j = sbMode === 'uniform' ? journal.find(j=>j.id==='j3') : journal.find(j=>j.id==='j6');
+  const unlocked = j.need.every(id => state.completed.has(id));
+  el('sandboxFormulaNote').textContent = unlocked
+    ? `Fórmula já descoberta: ${j.formula} — use a bancada para testar valores.`
+    : 'A fórmula ainda não foi revelada no Caderno de Descobertas. Continue observando os padrões.';
+
+  drawScene(sbCtx, sbCanvas, sbPseudoPhase(), 0, null, false);
+}
+
+// ============================================================
+// LABORATÓRIO DE IMPACTO — versão física 2D estável
+// ============================================================
+// ============================================================
+// SKINS DO LABORATÓRIO DE IMPACTO
+// ============================================================
+// ADICIONE OU REMOVA SKINS NESTA LISTA.
+// Coloque as imagens na pasta indicada.
+// Exemplo: { id:'bola_neon', name:'Neon', image:'assets/skins/neon.png', price:1000 }
+// Para adicionar uma skin, copie um novo objeto para a lista.
+// Para remover uma skin, apague o objeto correspondente.
+// ============================================================
+const LAB_SKINS = [
+  {id:'default', name:'Padrão', image:null, price:0},
+  {id:'neon', name:'Neon', image:'assets/skins/neon.png', price:500},
+  {id:'space', name:'Space', image:'assets/skins/space.png', price:1500},
+  {id:'plasma', name:'Plasma', image:'assets/skins/plasma.webp', price:4000}
+];
+
+// ============================================================
+// PERSISTÊNCIA
+// ============================================================
+const LAB_STORAGE_KEY = 'racetrackPhysics.labProgress.v4';
+const skinImages = new Map();
+const LAB_START = {x:14, y:7};
+function defaultLabProgress(){return {coins:0,bestScore:0,bestCombo:1,challengeNumber:1,maxRange:0,maxHeight:0,completed:0,holesInOne:0,totalShots:0,equippedSkin:'default',ownedSkins:['default']};}
+function loadLabProgress(){
+  try{
+    let raw=JSON.parse(localStorage.getItem(LAB_STORAGE_KEY)||'null');
+    if(!raw){
+      // Migração: preserva o progresso das versões anteriores do Laboratório.
+      const oldKeys=['racetrackPhysics.labProgress.v3','racetrack-physics-lab-v1'];
+      for(const key of oldKeys){
+        try{const old=JSON.parse(localStorage.getItem(key)||'null');if(old){raw={coins:old.coins??old.points??0,bestScore:old.bestScore??0,bestCombo:old.bestCombo??1,challengeNumber:old.challengeNumber??1,maxRange:old.maxRange??0,maxHeight:old.maxHeight??0,completed:old.completed??0,equippedSkin:old.equippedSkin??old.equipped??'default',ownedSkins:old.ownedSkins??old.owned??['default']};break;}}catch(_){}
+      }
+    }
+    if(!raw)return defaultLabProgress();
+    const base=defaultLabProgress();
+    const merged={...base,...raw};
+    merged.coins=Math.max(0,Number.isFinite(+merged.coins)?+merged.coins:0);
+    merged.bestScore=Math.max(0,Number.isFinite(+merged.bestScore)?+merged.bestScore:0);
+    merged.bestCombo=Math.max(1,Number.isFinite(+merged.bestCombo)?+merged.bestCombo:1);
+    merged.challengeNumber=Math.max(1,Math.floor(Number(merged.challengeNumber)||1));
+    merged.maxRange=Math.max(0,Number(merged.maxRange)||0);
+    merged.maxHeight=Math.max(0,Number(merged.maxHeight)||0);
+    merged.completed=Math.max(0,Math.floor(Number(merged.completed)||0));
+    merged.holesInOne=Math.max(0,Math.floor(Number(merged.holesInOne)||0));
+    merged.totalShots=Math.max(0,Math.floor(Number(merged.totalShots)||0));
+    merged.ownedSkins=Array.from(new Set(['default',...(Array.isArray(raw.ownedSkins)?raw.ownedSkins:[])]))
+      .filter(id=>LAB_SKINS.some(s=>s.id===id));
+    if(!merged.ownedSkins.includes('default'))merged.ownedSkins.unshift('default');
+    if(!LAB_SKINS.some(s=>s.id===merged.equippedSkin) || !merged.ownedSkins.includes(merged.equippedSkin))merged.equippedSkin='default';
+    return merged;
+  }catch(e){return defaultLabProgress();}
+}
+function saveLabProgress(){try{localStorage.setItem(LAB_STORAGE_KEY,JSON.stringify(lab.progress));}catch(e){console.warn('Não foi possível salvar o progresso do Laboratório.',e);}}
+function drawShopPreviews(){document.querySelectorAll('.lab-skin-preview').forEach(c=>{const cctx=c.getContext('2d');cctx.clearRect(0,0,c.width,c.height);drawLabSkin(cctx,c.width/2,c.height/2,Math.min(c.width,c.height)/2-3,c.dataset.skin);});}
+function preloadLabSkins(){LAB_SKINS.forEach(s=>{if(!s.image)return;const img=new Image();img.onload=()=>{skinImages.set(s.id,img);drawShopPreviews();drawLabScene();};img.onerror=()=>{skinImages.set(s.id,null);drawShopPreviews();};img.src=s.image;});}
+
+let lab={progress:defaultLabProgress(),number:1,hole:null,running:false,showVectors:true,projectile:null,aimVisible:true,shotsLeft:3,stageScore:0,combo:1,animationFrame:null,lastPath:null,phase:'ready',shotId:0,initialized:false,landed:false,recentSolutions:[]};
+let labCanvas,labCtx,labSpeed,labAngle,labSpeedOut,labAngleOut,labLaunchBtn,labRetryBtn,labNextBtn,labVectorsBtn,labFeedback,labTitle,labChallengeText,labPanelContent,labPlayPanel;
+let labTargetScore,labShots,labStageScore,labShotsOut,labHoleDistance;
+
+// ============================================================
+// FÍSICA DO MOVIMENTO OBLÍQUO
+// ============================================================
+function projectileState(speed,angle,time){
+  const rad=angle*Math.PI/180;
+  const vx=speed*Math.cos(rad);
+  const vy0=speed*Math.sin(rad);
+  const g=lab.hole.gravity;
+  const vy=vy0-g*time;
+  return {
+    x:LAB_START.x+vx*time,
+    y:Math.max(0,LAB_START.y+vy0*time-.5*g*time*time),
+    vx, vy0, vy, speed:Math.hypot(vx,vy), time
+  };
+}
+function projectileFlightTime(speed,angle){
+  const vy0=speed*Math.sin(angle*Math.PI/180),g=lab.hole.gravity;
+  return (vy0+Math.sqrt(Math.max(0,vy0*vy0+2*g*LAB_START.y)))/g;
+}
+function projectileMaxHeight(speed,angle){
+  const vy0=speed*Math.sin(angle*Math.PI/180);
+  return LAB_START.y+(vy0*vy0)/(2*lab.hole.gravity);
+}
+function currentStartState(){
+  return projectileState(+labSpeed.value,+labAngle.value,0);
+}
+
+// ============================================================
+// GERAÇÃO PROCEDURAL DOS BURACOS
+// ============================================================
+function seededRandom(seed){
+  let x=seed>>>0;
+  return ()=>{
+    x=(Math.imul(x^(x>>>15),1)|0)+0x6D2B79F5|0;
+    let t=x;
+    t=Math.imul(t^(t>>>15),t|1);
+    t^=t+Math.imul(t^(t>>>7),t|61);
+    return ((t^(t>>>14))>>>0)/4294967296;
+  };
+}
+function getHoleDifficulty(n){return Math.max(1,1+Math.floor((Math.max(1,n)-1)/3));}
+function generateHole(seed,number){
+  const difficulty=getHoleDifficulty(number),r=seededRandom(seed);
+  const envs=[
+    {name:'Campo de Testes',gravity:9.8},
+    {name:'Lua',gravity:1.62},
+    {name:'Marte',gravity:3.71}
+  ];
+  const profile=Math.floor(r()*6);
+  let environment=envs[0];
+  if(difficulty>=3 && r()>.35) environment=envs[Math.floor(r()*envs.length)];
+
+  // Perfis de distância deliberadamente diferentes para evitar que a mesma tacada
+  // resolva vários buracos consecutivos.
+  let minDistance,maxDistance;
+  switch(profile){
+    case 0: minDistance=42+difficulty*3; maxDistance=58+difficulty*5; break;
+    case 1: minDistance=62+difficulty*4; maxDistance=82+difficulty*6; break;
+    case 2: minDistance=88+difficulty*5; maxDistance=112+difficulty*7; break;
+    case 3: minDistance=50+difficulty*2; maxDistance=72+difficulty*4; break;
+    case 4: minDistance=105+difficulty*4; maxDistance=135+difficulty*6; break;
+    default:minDistance=72+difficulty*3; maxDistance=100+difficulty*5; break;
+  }
+  if(environment.name==='Lua'){minDistance=Math.max(minDistance,70+difficulty*3);maxDistance=Math.min(175,maxDistance+35);}
+  if(environment.name==='Marte'){minDistance=Math.max(minDistance,52+difficulty*3);maxDistance=Math.min(155,maxDistance+15);}
+  minDistance=Math.min(minDistance,165);
+  maxDistance=Math.min(Math.max(maxDistance,minDistance+8),175);
+
+  const distance=minDistance+r()*(maxDistance-minDistance);
+  const holeRadius=Math.max(1.65,3.15-difficulty*.075);
+  const par=Math.max(2,Math.min(6,2+Math.floor((difficulty-1)/3)));
+  const targetScore=Math.round((170+difficulty*34+(par-2)*40)/10)*10;
+  return {
+    seed,number,difficulty,profile,environment,gravity:environment.gravity,
+    hole:{x:LAB_START.x+distance,radius:holeRadius},
+    distance,par,targetScore
+  };
+}
+function landingXForShot(speed,angle,gravity){
+  const rad=angle*Math.PI/180;
+  const vy0=speed*Math.sin(rad);
+  const g=Math.max(.001,gravity);
+  const flight=(vy0+Math.sqrt(Math.max(0,vy0*vy0+2*g*LAB_START.y)))/g;
+  return speed*Math.cos(rad)*flight+LAB_START.x;
+}
+function solutionTooSimilarToHole(hole,solution){
+  const x=landingXForShot(solution.speed,solution.angle,hole.gravity);
+  const margin=Math.max(4.5,hole.hole.radius*1.75);
+  return Math.abs(x-hole.hole.x)<margin;
+}
+function makeValidHole(number,forbiddenSolutions=[]){
+  const base=(number*92821+17389)>>>0;
+  const baseline=number>1?[{speed:24,angle:45},...forbiddenSolutions]:[];
+  for(let i=0;i<120;i++){
+    const h=generateHole((base+i*7919)>>>0,number);
+    const blocked=baseline.some(sol=>solutionTooSimilarToHole(h,sol));
+    if(!blocked)return h;
+  }
+  // Fallback: garante um buraco diferente da combinação-padrão, mesmo se a busca
+  // atingir o limite de tentativas.
+  let h=generateHole((base+999983)>>>0,number);
+  if(number>1 && solutionTooSimilarToHole(h,{speed:24,angle:45})){
+    h.hole.x += 22;
+    h.distance += 22;
+  }
+  return h;
+}
+
+// ============================================================
+// RENDERIZAÇÃO
+// ============================================================
+function labScale(hole){
+  const maxX=Math.max(hole.hole.x+12,LAB_START.x+55);
+  const maxY=Math.max(32,projectileMaxHeight(+labSpeed.value,+labAngle.value)+4);
+  return {left:38,baseY:labCanvas.height-45,sx:(labCanvas.width-68)/(maxX+8),sy:(labCanvas.height-82)/(maxY+6)};
+}
+function worldToPixel(sc,p){return{x:sc.left+p.x*sc.sx,y:sc.baseY-p.y*sc.sy};}
+function drawArrow(ctx,x1,y1,x2,y2,color,label){ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();const a=Math.atan2(y2-y1,x2-x1);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-8*Math.cos(a-.4),y2-8*Math.sin(a-.4));ctx.lineTo(x2-8*Math.cos(a+.4),y2-8*Math.sin(a+.4));ctx.closePath();ctx.fill();ctx.font='10px monospace';ctx.fillText(label,x2+5,y2-5);}
+function drawLabSkin(ctx,x,y,r,id){
+  const skin=LAB_SKINS.find(s=>s.id===id)||LAB_SKINS[0],img=skinImages.get(skin.id);
+  ctx.save();ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.clip();
+  if(img&&img.complete&&img.naturalWidth){const ratio=Math.max(r*2/img.width,r*2/img.height);ctx.drawImage(img,x-img.width*ratio/2,y-img.height*ratio/2,img.width*ratio,img.height*ratio);}
+  else{const colors={default:'#ff5a1f',neon:'#4fd1e8',space:'#8b5cf6',plasma:'#f2c14e'};ctx.fillStyle=colors[skin.id]||'#ff5a1f';ctx.fillRect(x-r,y-r,r*2,r*2);ctx.fillStyle='rgba(255,255,255,.26)';ctx.beginPath();ctx.arc(x-r*.28,y-r*.3,r*.32,0,Math.PI*2);ctx.fill();}
+  ctx.restore();ctx.strokeStyle='rgba(255,255,255,.9)';ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.stroke();
+}
+function drawHole(ctx,sc,hole){
+  const ground=worldToPixel(sc,{x:0,y:0}),hp=worldToPixel(sc,{x:hole.hole.x,y:0}),rx=hole.hole.radius*sc.sx;
+  ctx.fillStyle='#071017';ctx.beginPath();ctx.ellipse(hp.x,ground.y+1,Math.max(5,rx),Math.max(2,rx*.34),0,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=1;ctx.stroke();
+  ctx.strokeStyle='#f2c14e';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(hp.x,hp.y-30);ctx.lineTo(hp.x,hp.y);ctx.stroke();
+  ctx.fillStyle='#f2c14e';ctx.beginPath();ctx.moveTo(hp.x,hp.y-29);ctx.lineTo(hp.x+18,hp.y-24);ctx.lineTo(hp.x,hp.y-19);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#f2c14e';ctx.font='700 11px Oswald,sans-serif';ctx.fillText('BURACO',hp.x-24,ground.y+20);
+}
+function drawShortAim(){
+  if(!lab.initialized||!lab.hole||!labCanvas||!labCtx||!labSpeed||!labAngle)return;
+  const speed=+labSpeed.value,angle=+labAngle.value;
+  const flight=projectileFlightTime(speed,angle);
+  const tEnd=Math.min(Math.max(flight*.16,.18),.48);
+  const sc=labScale(lab.hole),ctx=labCtx;
+  const startPx=worldToPixel(sc,LAB_START);
+  for(let i=0;i<=12;i++){
+    const u=i/12,t=tEnd*u,p=projectileState(speed,angle,t),q=worldToPixel(sc,p);
+    const r=3.1-u*1.15;ctx.globalAlpha=.95-u*.5;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(q.x,q.y,r,0,Math.PI*2);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+}
+function drawLabScene(){
+  if(!lab.initialized||!lab.hole||!labCtx||!labCanvas)return;
+  const sc=labScale(lab.hole),ctx=labCtx;ctx.clearRect(0,0,labCanvas.width,labCanvas.height);
+  const grad=ctx.createLinearGradient(0,0,0,labCanvas.height);grad.addColorStop(0,'#0b141d');grad.addColorStop(1,'#0f1b14');ctx.fillStyle=grad;ctx.fillRect(0,0,labCanvas.width,labCanvas.height);
+  const ground=worldToPixel(sc,{x:0,y:0});ctx.fillStyle='rgba(89,247,176,.10)';ctx.fillRect(0,ground.y,labCanvas.width,labCanvas.height-ground.y);ctx.strokeStyle='rgba(89,147,172,.42)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(18,ground.y);ctx.lineTo(labCanvas.width-18,ground.y);ctx.stroke();
+  ctx.fillStyle='#9eb0c2';ctx.font='10px monospace';ctx.fillText(`${lab.hole.environment.name} · g = ${lab.hole.gravity.toFixed(2)} m/s² · seed ${lab.hole.seed}`,40,18);ctx.fillStyle='#f2c14e';ctx.font='700 11px monospace';ctx.fillText(`META ${lab.hole.targetScore} · PAR ${lab.hole.par}`,40,34);
+  drawHole(ctx,sc,lab.hole);
+  const start=worldToPixel(sc,LAB_START);ctx.fillStyle='rgba(124,147,172,.45)';ctx.fillRect(start.x-2,start.y+9,4,ground.y-start.y-9);
+  if(lab.aimVisible&&!lab.running&&!lab.landed)drawShortAim();
+  const ballWorld=lab.projectile || currentStartState();
+  const q=worldToPixel(sc,ballWorld);drawLabSkin(ctx,q.x,q.y,10,lab.progress.equippedSkin);
+  if(lab.running&&lab.showVectors){drawArrow(ctx,q.x,q.y,q.x+Math.max(-60,Math.min(60,ballWorld.vx*2)),q.y,'#4fd1e8','Vx');if(Math.abs(ballWorld.vy)>.05)drawArrow(ctx,q.x,q.y,q.x,q.y-Math.max(-60,Math.min(60,ballWorld.vy*2)),'#f2c14e','Vy');}
+}
+
+// ============================================================
+// PONTUAÇÃO E LOJA
+// ============================================================
+function updateGlobalScoreUI(){const labVisible=document.getElementById('labView').style.display!=='none';scoreValue.textContent=(labVisible?lab.progress.coins:state.score).toLocaleString('pt-BR');}
+function updateLabTip(){
+  if(!lab.hole||!labSpeed||!labAngle)return;
+  const v0=Number(labSpeed.value), angle=Number(labAngle.value), g=lab.hole.gravity, h0=LAB_START.y;
+  const rad=angle*Math.PI/180;
+  const vx=v0*Math.cos(rad);
+  const vy0=v0*Math.sin(rad);
+  const discriminant=Math.max(0,vy0*vy0+2*g*h0);
+  const t=(vy0+Math.sqrt(discriminant))/Math.max(g,0.001);
+  const range=vx*t;
+  const tip=el('labTipExample');
+  if(tip)tip.textContent=`Com V₀ = ${v0.toFixed(1)} m/s e θ = ${angle.toFixed(0)}°, o cálculo dá aproximadamente R = ${range.toFixed(1)} m. Compare esse valor com a distância do buraco (${lab.hole.distance.toFixed(1)} m) e ajuste os controles.`;
+}
+function refreshLabUI(){
+  if(!lab.initialized||!lab.hole)return;
+  const h=lab.hole;labTitle.textContent=`Buraco #${lab.number}`;labChallengeText.textContent=`Coloque a bola no buraco em até ${h.par} tacadas. Menos tacadas e acertos mais próximos rendem mais pontos.`;
+  labTargetScore.textContent=h.targetScore;labShots.textContent=h.par;labHoleDistance.textContent=h.distance.toFixed(1)+' m';labShotsOut.textContent=lab.shotsLeft;labStageScore.textContent=lab.stageScore.toLocaleString('pt-BR');el('labPoints').textContent=lab.progress.coins.toLocaleString('pt-BR');el('labCombo').textContent='x'+lab.combo;el('labBestCombo').textContent='x'+lab.progress.bestCombo;el('labNumber').textContent='#'+lab.number;el('labGravity').textContent=h.gravity.toFixed(2);labSpeedOut.textContent=(+labSpeed.value).toFixed(1)+' m/s';labAngleOut.textContent=labAngle.value+'°';updateLabTip();drawLabScene();updateGlobalScoreUI();
+}
+function equipLabSkin(id){
+  const skin=LAB_SKINS.find(s=>s.id===id);
+  if(!skin || !lab.progress.ownedSkins.includes(id)) return false;
+  lab.progress.equippedSkin=id;
+  saveLabProgress();
+  refreshLabUI();
+  showLabPanel('shop');
+  return true;
+}
+function buyLabSkin(id){
+  const skin=LAB_SKINS.find(s=>s.id===id);
+  if(!skin)return {ok:false,message:'Skin não encontrada.'};
+  if(lab.progress.ownedSkins.includes(id)){
+    return {ok:equipLabSkin(id),message:`${skin.name} equipada.`};
+  }
+  const price=Math.max(0,Number(skin.price)||0);
+  const coins=Math.max(0,Number(lab.progress.coins)||0);
+  if(coins<price){
+    return {ok:false,message:`Faltam ${price-coins} pontos para esta skin.`};
+  }
+  lab.progress.coins=coins-price;
+  lab.progress.ownedSkins=Array.from(new Set([...lab.progress.ownedSkins,id]));
+  lab.progress.equippedSkin=id;
+  saveLabProgress();
+  updateGlobalScoreUI();
+  refreshLabUI();
+  return {ok:true,message:`${skin.name} comprada e equipada.`};
+}
+function buyOrEquipSkin(id){return buyLabSkin(id).ok;}
+function showLabPanel(kind){
+  labPlayPanel.style.display=kind==='play'?'':'none';
+  labPanelContent.style.display=kind==='play'?'none':'';
+  ['labPlayTab','labShopTab','labSkinsTab','labStatsTab'].forEach(id=>el(id).classList.remove('active'));
+  el(kind==='play'?'labPlayTab':kind==='shop'?'labShopTab':kind==='skins'?'labSkinsTab':'labStatsTab').classList.add('active');
+  if(kind==='play'){refreshLabUI();return;}
+  if(kind==='stats'){
+    labPanelContent.innerHTML=`<h3>Estatísticas</h3><div class="lab-empty">Melhor recompensa: <b>${lab.progress.bestScore.toLocaleString('pt-BR')}</b><br>Melhor combo: <b>x${lab.progress.bestCombo}</b><br>Buracos concluídos: <b>${lab.progress.completed}</b><br>Hole-in-one: <b>${lab.progress.holesInOne}</b><br>Maior alcance: <b>${lab.progress.maxRange.toFixed(1)} m</b><br>Maior altura: <b>${lab.progress.maxHeight.toFixed(1)} m</b><br>Tacadas realizadas: <b>${lab.progress.totalShots}</b></div>`;
+    return;
+  }
+  const ownedOnly=kind==='skins';
+  const list=LAB_SKINS.filter(s=>!ownedOnly||lab.progress.ownedSkins.includes(s.id));
+  labPanelContent.innerHTML=`<h3>${ownedOnly?'Minhas skins':'Loja'}</h3><div class="sandbox-note" style="margin-bottom:8px">Saldo: <b>${lab.progress.coins.toLocaleString('pt-BR')}</b> pontos</div>${list.length?list.map(s=>{
+    const owned=lab.progress.ownedSkins.includes(s.id),equipped=lab.progress.equippedSkin===s.id;
+    const label=equipped?'EQUIPADA':owned?'EQUIPAR':`COMPRAR · ${s.price}`;
+    return `<div class="lab-store-card"><canvas class="lab-skin-preview" data-skin="${s.id}" width="48" height="48"></canvas><div class="meta"><b>${s.name}</b><span>${s.price?s.price+' pontos':'Grátis'}</span></div><button type="button" class="tab-btn" data-skin-action="${s.id}" data-owned="${owned?'1':'0'}" ${equipped?'disabled':''}>${label}</button></div>`;
+  }).join(''):'<div class="lab-empty">Nenhuma skin disponível.</div>'}`;
+  labPanelContent.querySelectorAll('[data-skin-action]').forEach(btn=>btn.addEventListener('click',(event)=>{
+    event.preventDefault();
+    event.stopPropagation();
+    const id=btn.dataset.skinAction;
+    const result=lab.progress.ownedSkins.includes(id)?
+      (equipLabSkin(id)?{ok:true,message:`${LAB_SKINS.find(s=>s.id===id).name} equipada.`}:{ok:false,message:'Não foi possível equipar esta skin.'}):
+      buyLabSkin(id);
+    if(result.ok){labFeedback.className='feedback success';labFeedback.textContent=result.message;}
+    else{labFeedback.className='feedback short';labFeedback.textContent=result.message;}
+    showLabPanel(kind);
+    updateGlobalScoreUI();
+  }));
+  drawShopPreviews();
+}
+
+// ============================================================
+// MIRA + LANÇAMENTO
+// ============================================================
+function resetLabStage(preserveCombo=false){
+  if(!lab.hole||!lab.initialized)return;
+  if(lab.animationFrame)cancelAnimationFrame(lab.animationFrame);
+  lab.animationFrame=null;lab.shotId++;lab.running=false;lab.projectile=currentStartState();lab.aimVisible=true;lab.landed=false;lab.shotsLeft=lab.hole.par;lab.stageScore=0;if(!preserveCombo)lab.combo=1;lab.lastPath=null;lab.phase='ready';labLaunchBtn.disabled=false;labRetryBtn.style.display='none';labNextBtn.style.display='none';labFeedback.className='feedback';labFeedback.textContent='Ajuste a velocidade e o ângulo. A mira sempre sai do centro da bola.';refreshLabUI();requestAnimationFrame(()=>{if(lab.initialized&&lab.hole&&!lab.running){lab.aimVisible=true;drawLabScene();}});
+}
+function startNextHole(){lab.number++;lab.progress.challengeNumber=lab.number;lab.hole=makeValidHole(lab.number,lab.recentSolutions);resetLabStage(true);saveLabProgress();requestAnimationFrame(()=>{if(lab.initialized&&!lab.running){lab.aimVisible=true;lab.landed=false;drawLabScene();}});}
+function scoreHole(distanceError,shots,speed,angle){const hole=lab.hole;if(shots===1&&distanceError<=hole.hole.radius+.2)lab.progress.holesInOne++;const precision=Math.max(0,1-distanceError/Math.max(hole.hole.radius*3,6)),shotBonus=Math.max(0,hole.par-shots+1)*70,precisionBonus=Math.round(precision*90),base=180+hole.difficulty*22+shotBonus+precisionBonus,reward=Math.max(1,lab.combo)*base;lab.stageScore=reward;lab.progress.coins+=reward;lab.progress.bestScore=Math.max(lab.progress.bestScore,reward);lab.combo=Math.min(8,lab.combo+1);lab.progress.bestCombo=Math.max(lab.progress.bestCombo,lab.combo);lab.progress.completed++;lab.recentSolutions=[{speed,angle},...lab.recentSolutions].slice(0,5);return reward;}
+function endShot(path){
+  const hole=lab.hole,landing=path.landing,err=Math.abs(landing.x-hole.hole.x),inside=err<=hole.hole.radius;
+  lab.progress.totalShots++;lab.progress.maxRange=Math.max(lab.progress.maxRange,path.range);lab.progress.maxHeight=Math.max(lab.progress.maxHeight,path.maxHeight);
+  if(inside){lab.phase='sunk';lab.landed=true;lab.aimVisible=false;lab.projectile={...landing,y:0};const reward=scoreHole(err,path.shotsUsed,path.speed,path.angle);saveLabProgress();updateGlobalScoreUI();labFeedback.className='feedback success';labFeedback.innerHTML=`<b>⛳ NO BURACO!</b><br>${path.shotsUsed===1?'HOLE-IN-ONE!<br>':''}Erro lateral: ${err.toFixed(1)} m<br><b>+${reward.toLocaleString('pt-BR')} pontos</b> · Combo x${lab.combo}`;labLaunchBtn.disabled=true;labRetryBtn.style.display='none';labNextBtn.style.display='';refreshLabUI();return;}
+  lab.shotsLeft--;lab.phase=lab.shotsLeft>0?'ready':'exhausted';lab.landed=false;lab.projectile=currentStartState();lab.aimVisible=lab.shotsLeft>0;
+  if(lab.shotsLeft<=0){lab.combo=1;lab.aimVisible=false;labLaunchBtn.disabled=true;labRetryBtn.style.display='';labFeedback.className='feedback short';labFeedback.innerHTML=`<b>Não entrou.</b><br>A bola terminou ${err.toFixed(1)} m do centro. Tente novamente.`;}
+  else{labLaunchBtn.disabled=false;labRetryBtn.style.display='none';labFeedback.className='feedback short';labFeedback.textContent=`Quase! A bola terminou ${err.toFixed(1)} m do centro. Restam ${lab.shotsLeft} tacadas.`;}
+  saveLabProgress();refreshLabUI();
+}
+function launchLab(){
+  if(!lab.initialized||!lab.hole||lab.running||lab.phase!=='ready'||lab.shotsLeft<=0)return;
+  const speed=+labSpeed.value,angle=+labAngle.value,flight=projectileFlightTime(speed,angle),points=[];
+  for(let i=0;i<=180;i++)points.push(projectileState(speed,angle,flight*i/180));
+  const landing={...points[points.length-1],y:0,time:flight};
+  const path={points,flight,range:landing.x-LAB_START.x,maxHeight:projectileMaxHeight(speed,angle),landing,shotsUsed:lab.hole.par-lab.shotsLeft+1,speed,angle};
+  const shotId=++lab.shotId;lab.running=true;lab.phase='flying';lab.aimVisible=false;labLaunchBtn.disabled=true;lab.lastPath=path;lab.projectile={...points[0]};
+  const start=performance.now(),duration=Math.min(6200,Math.max(1800,flight*980));
+  const frame=now=>{
+    if(!lab.running||shotId!==lab.shotId)return;
+    const progress=Math.min(1,Math.max(0,(now-start)/duration));
+    const t=progress*flight;
+    lab.projectile=projectileState(speed,angle,t);updateLabHud(lab.projectile);drawLabScene();
+    if(progress<1){lab.animationFrame=requestAnimationFrame(frame);return;}
+    lab.running=false;lab.animationFrame=null;lab.projectile=landing;drawLabScene();endShot({...path,landing});
+  };
+  lab.animationFrame=requestAnimationFrame(frame);
+}
+
+// ============================================================
+// HUD / INTERFACE
+// ============================================================
+function updateLabHud(p){if(!p)return;el('labVelocity').textContent=`${p.vx.toFixed(1)} / ${p.vy.toFixed(1)}`;el('labPosition').textContent=`${Math.max(0,p.y).toFixed(1)} m / ${Math.max(0,p.x-LAB_START.x).toFixed(1)} m`;el('labTime').textContent=p.time.toFixed(2)+' s';}
+function initLab(){
+  if(lab.initialized)return;
+  lab.progress=loadLabProgress();lab.number=Math.max(1,lab.progress.challengeNumber||1);preloadLabSkins();
+  labCanvas=el('labCanvas');labCtx=labCanvas.getContext('2d');labSpeed=el('labSpeed');labAngle=el('labAngle');labSpeedOut=el('labSpeedOut');labAngleOut=el('labAngleOut');labLaunchBtn=el('labLaunchBtn');labRetryBtn=el('labRetryBtn');labNextBtn=el('labNextBtn');labVectorsBtn=el('labVectorsBtn');labFeedback=el('labFeedback');labTitle=el('labTitle');labChallengeText=el('labChallengeText');labPanelContent=el('labPanelContent');labPlayPanel=el('labPlayPanel');labTargetScore=el('labTargetScore');labShots=el('labShots');labStageScore=el('labStageScore');labShotsOut=el('labShotsOut');labHoleDistance=el('labHoleDistance');
+  lab.initialized=true;lab.hole=makeValidHole(lab.number);lab.landed=false;lab.recentSolutions=[];lab.projectile=currentStartState();
+  labSpeed.addEventListener('input',()=>{if(!lab.running){lab.projectile=currentStartState();refreshLabUI();}});labAngle.addEventListener('input',()=>{if(!lab.running){lab.projectile=currentStartState();refreshLabUI();}});
+  labLaunchBtn.addEventListener('click',launchLab);labRetryBtn.addEventListener('click',resetLabStage);labNextBtn.addEventListener('click',startNextHole);
+  labVectorsBtn.addEventListener('click',()=>{lab.showVectors=!lab.showVectors;labVectorsBtn.textContent='Vetores: '+(lab.showVectors?'visíveis':'ocultos');drawLabScene();});
+  el('labPlayTab').addEventListener('click',()=>showLabPanel('play'));el('labShopTab').addEventListener('click',()=>showLabPanel('shop'));el('labSkinsTab').addEventListener('click',()=>showLabPanel('skins'));el('labStatsTab').addEventListener('click',()=>showLabPanel('stats'));
+  resetLabStage();
+}
+
+function init(){
+  // DOM refs
+  canvas = el('track'); ctx = canvas.getContext('2d');
+  paramSlider = el('paramSlider'); paramReadout = el('paramReadout');
+  runBtn = el('runBtn'); nextBtn = el('nextBtn'); feedback = el('feedback');
+  phaseTag = el('phaseTag'); phaseTitle = el('phaseTitle'); phaseDesc = el('phaseDesc');
+  attemptsValue = el('attemptsValue'); fixedTimeValue = el('fixedTimeValue');
+  lastDistance = el('lastDistance'); lastPrecision = el('lastPrecision');
+  scoreValue = el('scoreValue'); journalGrid = el('journalGrid');
+
+  sbCanvas = el('trackSandbox'); sbCtx = sbCanvas.getContext('2d');
+  sbParamSlider = el('sbParamSlider'); sbParamReadout = el('sbParamReadout');
+  sbTimeSlider = el('sbTimeSlider'); sbTimeReadout = el('sbTimeReadout');
+  sbModeUniform = el('sbModeUniform'); sbModeMuv = el('sbModeMuv'); sbModeMath = el('sbModeMath');
+  sbRunBtn = el('sbRunBtn'); sbFeedback = el('feedbackSandbox');
+  mathSandboxPanel = el('mathSandboxPanel'); mathExprInput = el('mathExprInput');
+  mathDomainStart = el('mathDomainStart'); mathDomainEnd = el('mathDomainEnd'); mathResolution = el('mathResolution');
+  mathFriction = el('mathFriction'); mathGravity = el('mathGravity'); mathGenerateBtn = el('mathGenerateBtn');
+  mathSandboxFeedback = el('mathSandboxFeedback'); mathExampleButtons = Array.from(document.querySelectorAll('.example-btn'));
+
+  // Inicializa o Laboratório primeiro. Ele é independente da Campanha/Sandbox e
+  // não pode ficar inutilizado caso algum recurso legado falhe durante o boot.
+  try {
+    initLab();
+  } catch (err) {
+    console.error('Falha ao inicializar o Laboratório:', err);
+    const labFeedbackBoot = document.getElementById('labFeedback');
+    if (labFeedbackBoot) {
+      labFeedbackBoot.textContent = 'Erro ao iniciar o Laboratório. Recarregue o arquivo.';
+      labFeedbackBoot.className = 'feedback over';
+    }
+  }
+
+  // ui.init() starting
+  // events
+  paramSlider.addEventListener('input', () => { syncSliderFill(paramSlider); paramReadout.textContent = parseFloat(paramSlider.value).toFixed(1); });
+  canvas.addEventListener('click', (event) => {
+    const phase = currentPhase();
+    const predicted = clampPredictionDistance(phase, resolutionFromPointer(phase, event));
+    state.prediction = {
+      phaseId: phase.id,
+      distance: predicted,
+      param: parseFloat(paramSlider.value),
+    };
+    drawScene(ctx, canvas, phase, 0, null, false);
+    feedback.className = 'feedback';
+    feedback.textContent = `Previsão registrada: ${predicted.toFixed(1)} un. Ajuste a posição no canvas e execute o teste.`;
+  });
+  runBtn.addEventListener('click', attemptRun);
+  nextBtn.addEventListener('click', () => {
+    if(state.phaseIndex < phases.length-1){
+      loadPhase(state.phaseIndex+1);
+    } else {
+      document.querySelector('.layout').style.display = 'none';
+      const banner = document.createElement('div');
+      banner.className = 'panel end-banner';
+      banner.innerHTML = '🏁 CAMPANHA CONCLUÍDA — Os módulos de Movimento Uniforme, MUV e Pistas Curvas foram dominados!';
+      document.getElementById('campaignView').insertBefore(banner, document.querySelector('.journal'));
+    }
+  });
+
+  sbModeUniform.addEventListener('click', () => { sbMode='uniform'; sbModeUniform.classList.add('active'); sbModeMuv.classList.remove('active'); sbModeMath.classList.remove('active'); updateSbUI(); });
+  sbModeMuv.addEventListener('click', () => { sbMode='muv'; sbModeMuv.classList.add('active'); sbModeUniform.classList.remove('active'); sbModeMath.classList.remove('active'); updateSbUI(); });
+  sbModeMath.addEventListener('click', () => { sbMode='math'; sbModeMath.classList.add('active'); sbModeUniform.classList.remove('active'); sbModeMuv.classList.remove('active'); updateSbUI(); });
+  sbParamSlider.addEventListener('input', updateSbUI);
+  sbTimeSlider.addEventListener('input', updateSbUI);
+  mathGenerateBtn.addEventListener('click', generateMathSandboxTrack_local);
+  mathExampleButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      mathExprInput.value = btn.dataset.example;
+      if(btn.dataset.example === 'sin(x/20)*16'){
+        mathDomainStart.value = '0';
+        mathDomainEnd.value = '260';
+        mathResolution.value = '500';
+        mathFriction.value = '0.04';
+        mathGravity.value = '14';
+      } else if(btn.dataset.example === '0.02*(x-40)^2'){
+        mathDomainStart.value = '40';
+        mathDomainEnd.value = '100';
+        mathResolution.value = '400';
+        mathFriction.value = '0.03';
+        mathGravity.value = '14';
+      } else if(btn.dataset.example === 'sin(x/20)+0.001*x^2'){
+        mathDomainStart.value = '0';
+        mathDomainEnd.value = '260';
+        mathResolution.value = '500';
+        mathFriction.value = '0.05';
+        mathGravity.value = '14';
+      } else if(btn.dataset.example === 'cos(x/10)*20'){
+        mathDomainStart.value = '0';
+        mathDomainEnd.value = '220';
+        mathResolution.value = '450';
+        mathFriction.value = '0.04';
+        mathGravity.value = '14';
+      } else if(btn.dataset.example === 'x/20'){
+        mathDomainStart.value = '0';
+        mathDomainEnd.value = '200';
+        mathResolution.value = '300';
+        mathFriction.value = '0.02';
+        mathGravity.value = '10';
+      }
+      generateMathSandboxTrack_local();
+    });
+  });
+
+  sbRunBtn.addEventListener('click', () => {
+    if(sbRunning) return;
+    sbRunning = true; sbRunBtn.disabled = true;
+    const phase = sbMode === 'math' ? mathSandboxPhase : sbPseudoPhase();
+    if(sbMode === 'math' && !phase){
+      generateMathSandboxTrack_local();
+    }
+    const activePhase = sbMode === 'math' ? mathSandboxPhase : phase;
+    if(!activePhase){
+      sbRunning = false; sbRunBtn.disabled = false;
+      setMathSandboxFeedback('Expressão inválida', true);
+      return;
+    }
+    const param = parseFloat(sbParamSlider.value);
+    if(sbMode === 'math' && mathSandboxDrop.active){
+      mathSandboxDrop.active = false;
+      if(mathSandboxDrop.raf){ cancelAnimationFrame(mathSandboxDrop.raf); mathSandboxDrop.raf = null; }
+      drawScene(sbCtx, sbCanvas, mathSandboxPhase, 0, null, false);
+    }
+    sbFeedback.textContent = 'Executando teste...';
+    runSimulation(activePhase, param, sbCtx, sbCanvas, null, (finalDist) => {
+      sbRunning = false; sbRunBtn.disabled = false;
+      el('sbDistance').textContent = finalDist.toFixed(1)+' un';
+      el('sbVel').textContent = finalVelocity(activePhase, param).toFixed(1)+' un/s';
+      sbFeedback.className = 'feedback success';
+      sbFeedback.textContent = `O carrinho percorreu ${finalDist.toFixed(1)} unidades nesta configuração.`;
+    });
+  });
+
+  document.getElementById('tabCampaign').addEventListener('click', () => {
+    document.getElementById('tabCampaign').classList.add('active');
+    document.getElementById('tabSandbox').classList.remove('active');
+    document.getElementById('tabLab').classList.remove('active');
+    document.getElementById('campaignView').style.display = '';
+    document.getElementById('sandboxView').style.display = 'none';
+    document.getElementById('labView').style.display = 'none';
+  });
+  document.getElementById('tabSandbox').addEventListener('click', () => {
+    document.getElementById('tabSandbox').classList.add('active');
+    document.getElementById('tabCampaign').classList.remove('active');
+    document.getElementById('tabLab').classList.remove('active');
+    document.getElementById('sandboxView').style.display = '';
+    document.getElementById('campaignView').style.display = 'none';
+    document.getElementById('labView').style.display = 'none';
+    updateSbUI();
+  });
+  document.getElementById('tabLab').addEventListener('click', () => {
+    initLab();
+    document.getElementById('tabLab').classList.add('active');
+    document.getElementById('tabCampaign').classList.remove('active');
+    document.getElementById('tabSandbox').classList.remove('active');
+    document.getElementById('campaignView').style.display = 'none';
+    document.getElementById('sandboxView').style.display = 'none';
+    document.getElementById('labView').style.display = '';
+    updateGlobalScoreUI();
+    refreshLabUI();
+  });
+
+  // init visuals
+  renderJournal();
+  loadPhase(0);
+  syncSliderFill(sbTimeSlider);
+  syncSliderFill(sbParamSlider);
+  generateMathSandboxTrack_local();
+}
+
+window.addEventListener('DOMContentLoaded',()=>{init();});
+})();</script></body>
+</html>
