@@ -64,3 +64,47 @@ No external frameworks or libraries are required.
 **Laboratory = Master and Replay**
 
 The goal is to transform physics learning into an interactive process where students actively investigate phenomena instead of only solving equations on paper.
+
+## Português 🇧🇷
+
+Racetrack Physics é uma plataforma educacional de Física que combina simulação, experimentação e gamificação para auxiliar o ensino e a aprendizagem de conceitos de Mecânica.
+
+O projeto foi desenvolvido como uma ferramenta de apoio ao ensino, permitindo que estudantes explorem fenômenos físicos por meio de desafios interativos, ambientes de experimentação e atividades guiadas.
+
+### Principais modos
+
+🚗 **Campanha**
+- Sequência progressiva de desafios educacionais.
+- Introdução gradual aos conceitos de Física.
+
+🧪 **Sandbox**
+- Laboratório virtual para experimentação livre.
+- Criação de pistas matemáticas a partir de funções.
+- Exploração de parâmetros físicos.
+
+🎯 **Laboratório de Trajetórias**
+- Modo infinito baseado em movimento oblíquo.
+- Desafios gerados proceduralmente.
+- Sistema de pontuação, combos e skins.
+- Aprendizagem por tentativa e erro.
+
+### Conceitos abordados
+
+- Movimento Uniforme (MU)
+- Movimento Uniformemente Variado (MUV)
+- Leis de Newton
+- Atrito
+- Energia Mecânica
+- Movimento Oblíquo
+- Cinemática
+- Modelagem Matemática
+
+### Filosofia do projeto
+
+**Campanha = Aprender**
+
+**Sandbox = Experimentar**
+
+**Laboratório = Dominar e Rejogar**
+
+O objetivo é transformar o aprendizado de Física em um processo ativo de investigação, permitindo que o estudante observe, formule hipóteses, teste ideias e compreenda os fenômenos físicos de forma interativa.
