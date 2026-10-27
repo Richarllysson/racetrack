@@ -19,6 +19,12 @@ A virtual laboratory where users can create custom tracks, experiment with mathe
 
 An infinite challenge mode focused on projectile motion. Players complete procedurally generated objectives, earn points, unlock cosmetic skins, and develop intuition about velocity, angle, gravity, and trajectory optimization.
 
+### Teacher Mode and Learning Center
+
+Teacher Mode provides a classroom-oriented view that hides score and Laboratory store tabs while keeping the simulations available. The Learning Center supports numerical predictions, guided experiments, Canvas graphs, explanations, saved experiment history, and result comparison. Educational history is stored separately from Laboratory progress in the browser.
+
+Predictions are tied to the mode and parameter values captured for a run; changed settings are flagged rather than silently compared. Results include absolute error and relative error when defined. Guided activities provide an objective, investigative question, parameter setup, procedure, model assumptions, and discussion prompts. Historical graphs overlay two experiments only when the selected quantity has compatible units.
+
 ## Educational Objectives
 
 Racetrack Physics aims to help students understand concepts such as:
@@ -87,6 +93,15 @@ O projeto foi desenvolvido como uma ferramenta de apoio ao ensino, permitindo qu
 - Desafios gerados proceduralmente.
 - Sistema de pontuação, combos e skins.
 - Aprendizagem por tentativa e erro.
+
+🎓 **Modo Professor e Centro de Aprendizagem**
+- O Modo Professor prioriza a discussão física ao ocultar pontuação e abas de loja do Laboratório, sem desativar as simulações.
+- Registre previsões numéricas associadas ao modo e aos parâmetros, e compare-as com os resultados da Campanha, do Sandbox e do Laboratório.
+- Veja erro absoluto e erro relativo quando definido; alterações de parâmetros são sinalizadas para evitar comparações indevidas.
+- Use roteiros com objetivo, pergunta investigativa, procedimento, hipóteses do modelo e questões para discussão.
+- Consulte gráficos em Canvas e compare séries históricas quando as grandezas tiverem unidades compatíveis.
+- Consulte explicações e histórico de até 50 experiências.
+- O histórico educacional e o progresso do Laboratório são armazenados separadamente.
 
 ### Conceitos abordados
 
