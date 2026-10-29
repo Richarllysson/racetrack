@@ -15,7 +15,7 @@ Racetrack Physics é uma aplicação web educacional de Física baseada em exper
 - **Sandbox:** modos MU, MUV e Matemático, com parâmetros ajustáveis e geração de pista a partir de expressão matemática.
 - **Laboratório de Impacto:** lançamento oblíquo, desafios procedurais, tacadas, pontuação, combos, skins, loja e estatísticas.
 - **Centro de Aprendizagem:** registro de previsões, roteiros guiados, gráficos em Canvas, explicações e comparação/histórico de experiências.
-- **Modo professor (beta):** botão `#eduTeacherToggle`, estado em `eduState.teacherMode` e classe CSS `teacher-mode`. Na versão atual, oculta elementos de pontuação e as abas de loja/skins/estatísticas do Laboratório, além de mostrar indicadores visuais. O estado do modo professor não é persistido entre recargas. Trate isso como comportamento atual, não como requisito imutável: avalie melhorias sem mudar o comportamento silenciosamente.
+- **Modo professor (beta):** botão `#eduTeacherToggle`, estado em `eduState.teacherMode` e classe CSS `teacher-mode`. O Centro de Aprendizagem e os controles de demonstração ficam ocultos quando o modo está desligado; ao ativá-lo, aparecem o painel pedagógico, o indicador visual e as opções docentes. A Campanha oblíqua mantém o enquadramento do Canvas fixo por geometria da fase, independente da velocidade e do ângulo de mira. Pontuação e abas de loja/skins/estatísticas do Laboratório são ocultadas no modo ativo. O estado do modo professor não é persistido entre recargas.
 
 ## Regras de implementação
 - Inspecione as funções envolvidas, as referências de IDs e os caminhos de execução antes de editar.

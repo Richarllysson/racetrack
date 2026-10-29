@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Racetrack Physics — MVP</title>
-<style>:root{font-family:Inter,system-ui,sans-serif;color:#edf2f7;background:#0b1118}*{box-sizing:border-box}body{margin:0;background:#0b1118;min-height:100vh}.app{max-width:1280px;margin:auto;padding:20px}.app-header{display:grid;grid-template-columns:1fr auto auto;gap:20px;align-items:center;margin-bottom:18px}.brand h1{margin:0;font-family:Oswald,sans-serif}.brand h1 span{color:#ff5a1f}.brand p{margin:6px 0;color:#8fa3b8;font:11px monospace}.tabs{display:flex;gap:8px}.tab-btn{border:1px solid #334155;background:#111827;color:#dbe5ef;padding:9px 14px;border-radius:8px;cursor:pointer}.tab-btn.active{background:#532315;border-color:#ff5a1f}.score-block{text-align:right}.score-block .label{font-size:11px;color:#8fa3b8}.score-block .value{font:bold 24px Oswald;color:#f2c14e}.layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(280px,.75fr);gap:18px}.panel{background:#111923;border:1px solid #263242;border-radius:14px;padding:18px}.phase-tag{font:700 11px monospace;color:#4fd1e8}.phase-title{font:700 26px Oswald;margin:8px 0}.phase-desc{margin:0 0 14px;color:#9eb0c2;line-height:1.5}.control-panel{display:flex;flex-direction:column;gap:14px}.control-panel .tabs{flex-wrap:wrap}.control-panel .tabs .tab-btn{flex:1;padding:8px}.control-group label{display:block;font-size:11px;color:#9eb0c2;margin-bottom:8px}.slider-row{display:flex;align-items:center;gap:12px}.slider-row input[type=range]{flex:1}.readout{min-width:58px;text-align:right;font:700 14px monospace}.btn{width:100%;border:0;border-radius:9px;padding:11px;cursor:pointer;font-weight:700}.btn-run{background:#ff5a1f;color:#fff}.btn-next{background:#f2c14e;color:#18120a}.btn:disabled{opacity:.45}.stat-row{display:flex;justify-content:space-between;color:#aab8c8;font-size:13px}.stat-row b{color:#fff}.hud{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.hud .cell{background:#18222e;padding:10px;border-radius:8px}.hud .k{font-size:10px;color:#8193a7}.hud .v{margin-top:4px;font:700 16px monospace}canvas{width:100%;height:auto;background:#0d151e;border-radius:10px}.feedback{white-space:pre-line;padding:10px;border-radius:8px;background:#16202b;min-height:40px}.feedback.success{border:1px solid #59f7b0}.feedback.short{border:1px solid #f2c14e}.journal{margin-top:18px}.journal h2{font:700 22px Oswald;margin:0 0 12px}.journal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.entry{padding:12px;border-radius:9px;background:#18222e}.entry.locked{opacity:.5}.etext{margin-top:5px;color:#9fb0c1;font-size:13px;line-height:1.45}.eformula{margin-top:8px;color:#4fd1e8;font:700 13px monospace}.math-examples{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.example-btn{border:1px solid #334155;background:#111827;color:#c9d7e5;padding:7px 9px;border-radius:7px;cursor:pointer}.math-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.math-field.full{grid-column:1/-1}.math-field input{width:100%;margin-top:5px;padding:8px;border-radius:7px;border:1px solid #334155;background:#0c131b;color:#fff}.sandbox-note{color:#8fa3b8;font-size:12px}.end-banner{text-align:center;color:#f2c14e}@media(max-width:900px){.app-header{grid-template-columns:1fr}.score-block{text-align:left}.layout{grid-template-columns:1fr}}
+<style>[hidden]{display:none!important}#eduTeacherToggle{padding:6px 9px;opacity:.86}:root{font-family:Inter,system-ui,sans-serif;color:#edf2f7;background:#0b1118}*{box-sizing:border-box}body{margin:0;background:#0b1118;min-height:100vh}.app{max-width:1280px;margin:auto;padding:20px}.app-header{display:grid;grid-template-columns:1fr auto auto;gap:20px;align-items:center;margin-bottom:18px}.brand h1{margin:0;font-family:Oswald,sans-serif}.brand h1 span{color:#ff5a1f}.brand p{margin:6px 0;color:#8fa3b8;font:11px monospace}.tabs{display:flex;gap:8px}.tab-btn{border:1px solid #334155;background:#111827;color:#dbe5ef;padding:9px 14px;border-radius:8px;cursor:pointer}.tab-btn.active{background:#532315;border-color:#ff5a1f}.score-block{text-align:right}.score-block .label{font-size:11px;color:#8fa3b8}.score-block .value{font:bold 24px Oswald;color:#f2c14e}.layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(280px,.75fr);gap:18px}.panel{background:#111923;border:1px solid #263242;border-radius:14px;padding:18px}.phase-tag{font:700 11px monospace;color:#4fd1e8}.phase-title{font:700 26px Oswald;margin:8px 0}.phase-desc{margin:0 0 14px;color:#9eb0c2;line-height:1.5}.control-panel{display:flex;flex-direction:column;gap:14px}.control-panel .tabs{flex-wrap:wrap}.control-panel .tabs .tab-btn{flex:1;padding:8px}.control-group label{display:block;font-size:11px;color:#9eb0c2;margin-bottom:8px}.slider-row{display:flex;align-items:center;gap:12px}.slider-row input[type=range]{flex:1}.readout{min-width:58px;text-align:right;font:700 14px monospace}.btn{width:100%;border:0;border-radius:9px;padding:11px;cursor:pointer;font-weight:700}.btn-run{background:#ff5a1f;color:#fff}.btn-next{background:#f2c14e;color:#18120a}.btn:disabled{opacity:.45}.stat-row{display:flex;justify-content:space-between;color:#aab8c8;font-size:13px}.stat-row b{color:#fff}.hud{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.hud .cell{background:#18222e;padding:10px;border-radius:8px}.hud .k{font-size:10px;color:#8193a7}.hud .v{margin-top:4px;font:700 16px monospace}canvas{width:100%;height:auto;background:#0d151e;border-radius:10px}.feedback{white-space:pre-line;padding:10px;border-radius:8px;background:#16202b;min-height:40px}.feedback.success{border:1px solid #59f7b0}.feedback.short{border:1px solid #f2c14e}.journal{margin-top:18px}.journal h2{font:700 22px Oswald;margin:0 0 12px}.journal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.entry{padding:12px;border-radius:9px;background:#18222e}.entry.locked{opacity:.5}.etext{margin-top:5px;color:#9fb0c1;font-size:13px;line-height:1.45}.eformula{margin-top:8px;color:#4fd1e8;font:700 13px monospace}.math-examples{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.example-btn{border:1px solid #334155;background:#111827;color:#c9d7e5;padding:7px 9px;border-radius:7px;cursor:pointer}.math-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.math-field.full{grid-column:1/-1}.math-field input{width:100%;margin-top:5px;padding:8px;border-radius:7px;border:1px solid #334155;background:#0c131b;color:#fff}.sandbox-note{color:#8fa3b8;font-size:12px}.end-banner{text-align:center;color:#f2c14e}@media(max-width:900px){.app-header{grid-template-columns:1fr}.score-block{text-align:left}.layout{grid-template-columns:1fr}}
 /* LABORATÓRIO DE IMPACTO */
 .lab-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 14px}
 .lab-chip{background:#18222e;border:1px solid #263242;border-radius:9px;padding:9px}
@@ -77,7 +77,7 @@
     <div class="score-block">
       <div class="label" id="scoreLabel">Pontuação</div>
       <div class="value" id="scoreValue">0</div>
-      <button class="tab-btn" id="eduTeacherToggle" type="button" aria-pressed="false" style="margin-top:6px;font-size:11px;">Modo professor: desligado</button>
+      <button class="tab-btn" id="eduTeacherToggle" type="button" aria-pressed="false" style="margin-top:6px;font-size:11px;">Ativar Modo Professor</button>
     </div>
   </header>
 
@@ -103,6 +103,13 @@
         <div class="control-group" id="campaignAngleGroup" style="display:none;">
           <label for="campaignAngleSlider">Ângulo de lançamento</label>
           <div class="slider-row"><input type="range" id="campaignAngleSlider" min="10" max="80" step="1" value="45"><span class="readout" id="campaignAngleReadout">45°</span></div>
+        </div>
+        <div class="control-group" id="teacherProjectileOptions" hidden>
+          <label for="teacherFullProjectileTrajectory" style="display:flex;align-items:flex-start;gap:8px;line-height:1.4;">
+            <input id="teacherFullProjectileTrajectory" type="checkbox" style="margin:2px 0 0;flex:0 0 auto;">
+            <span>Após a tentativa, mostrar a previsão teórica completa</span>
+          </label>
+          <p class="sandbox-note" style="margin:0;">A curva teórica será identificada separadamente do rastro real observado.</p>
         </div>
 
         <button class="btn btn-run" id="runBtn">▶ Executar Teste</button>
@@ -259,30 +266,49 @@ A mira mostra apenas o início da trajetória.</div>
   </div>
 
   <!-- CENTRO DE APRENDIZAGEM: previsão, experimentos guiados, gráficos e histórico -->
-  <section class="panel learning-hub" id="learningHub" aria-labelledby="eduTitle">
-    <div class="learning-head"><div><div class="phase-tag">FERRAMENTAS EDUCACIONAIS</div><h2 id="eduTitle" class="phase-title">Centro de aprendizagem</h2><p class="phase-desc">Registre uma hipótese, execute o experimento e compare a previsão com os dados calculados pelo jogo.</p></div><span class="teacher-pill" id="eduTeacherPill" style="display:none;">MODO PROFESSOR</span></div>
+  <section class="panel learning-hub" id="learningHub" aria-labelledby="eduTitle" hidden>
+    <div class="learning-head"><div><div class="phase-tag">FERRAMENTAS EDUCACIONAIS</div><h2 id="eduTitle" class="phase-title">Centro de aprendizagem</h2><p class="phase-desc" id="eduIntro">Planeje uma investigação, registre uma hipótese, execute a simulação e discuta os resultados.</p></div><span class="teacher-pill" id="eduTeacherPill" hidden>MODO PROFESSOR ATIVO</span></div>
+    <ol class="edu-stagebar" aria-label="Etapas da aula">
+      <li id="eduStepPredict" aria-current="step"><span>1</span> Prever</li>
+      <li id="eduStepExperiment"><span>2</span> Experimentar</li>
+      <li id="eduStepDiscuss"><span>3</span> Discutir</li>
+    </ol>
     <div class="learning-grid">
       <div class="learning-card">
-        <h3>1. Prever e experimentar</h3>
+        <h3>ROTEIRO DE AULA · PREVER</h3>
+        <label for="eduGuidedSelect">Roteiro e preset</label>
+        <select id="eduGuidedSelect"><option value="uniform">Movimento uniforme: d = v·t</option><option value="muv">Movimento acelerado: d = ½at²</option><option value="projectile">Movimento oblíquo: ângulo e alcance</option><option value="gravity">Investigar a gravidade no Laboratório</option><option value="mathtrack">Pista matemática: comparar inclinação e movimento</option></select>
+        <button class="btn btn-next" id="eduLoadGuide" type="button" style="margin-top:8px;">Carregar roteiro e parâmetros</button>
+        <div class="edu-guide-details" id="eduGuideDetails" aria-live="polite"></div>
+        <hr class="edu-separator">
         <label for="eduQuestion">Pergunta investigativa</label>
         <select id="eduQuestion"><option value="distance">Qual será a posição/distância final?</option><option value="range">Qual será o alcance horizontal?</option><option value="height">Qual será a altura máxima?</option><option value="time">Quanto tempo durará o movimento?</option></select>
+        <p class="edu-class-question" id="eduDiscussionPrompt"></p>
         <label for="eduPredictionValue" style="margin-top:9px;">Sua previsão numérica</label>
         <div class="slider-row"><input type="number" id="eduPredictionValue" placeholder="Digite um valor" step="any"><span id="eduPredictionUnit" class="readout">un</span></div>
         <button class="btn btn-run" id="eduRecordPrediction" type="button" style="margin-top:10px;">Registrar previsão</button>
         <div class="feedback" id="eduPredictionStatus" aria-live="polite">Escolha uma previsão antes de executar o experimento.</div>
-        <hr class="edu-separator">
-        <h3>Experimento guiado</h3>
-        <label for="eduGuidedSelect">Roteiro</label>
-        <select id="eduGuidedSelect"><option value="uniform">Movimento uniforme: d = v·t</option><option value="muv">Movimento acelerado: d = ½at²</option><option value="projectile">Movimento oblíquo: ângulo e alcance</option><option value="gravity">Investigar a gravidade no Laboratório</option><option value="mathtrack">Pista matemática: comparar inclinação e movimento</option></select>
-        <button class="btn btn-next" id="eduLoadGuide" type="button" style="margin-top:8px;">Carregar experimento</button>
-        <div class="edu-guide-details" id="eduGuideDetails" aria-live="polite"></div>
       </div>
       <div class="learning-card">
-        <div class="learning-row"><h3>2. Gráficos da simulação</h3><label for="eduGraphSeries" class="sr-only">Grandeza do gráfico</label><select id="eduGraphSeries"><option value="x">Posição horizontal x(t)</option><option value="y">Posição vertical y(t)</option><option value="speed">Módulo da velocidade</option><option value="vx">Velocidade horizontal vx(t)</option><option value="vy">Velocidade vertical vy(t)</option><option value="acceleration">Aceleração estimada</option></select></div>
+        <div class="learning-row"><h3>SIMULAÇÃO E GRÁFICOS AO VIVO</h3><label for="eduGraphSeries" class="sr-only">Grandeza do gráfico</label><select id="eduGraphSeries"><option value="x">Posição horizontal x(t)</option><option value="y">Posição vertical y(t)</option><option value="trajectory">Trajetória y(x)</option><option value="speed">Módulo da velocidade</option><option value="vx">Velocidade horizontal vx(t)</option><option value="vy">Velocidade vertical vy(t)</option><option value="acceleration">Aceleração estimada</option></select></div>
         <canvas id="eduGraphCanvas" width="860" height="280" role="img" aria-label="Gráfico da última simulação"></canvas>
         <p class="sandbox-note" id="eduGraphNote">O gráfico aparecerá após a primeira execução registrada.</p>
+        <div class="edu-result-grid" aria-label="Resumo da simulação">
+          <div class="edu-result-card"><span id="eduMetricOneLabel">Alcance calculado</span><strong id="eduMetricOne">—</strong></div>
+          <div class="edu-result-card"><span id="eduMetricTwoLabel">Altura máxima</span><strong id="eduMetricTwo">—</strong></div>
+          <div class="edu-result-card"><span id="eduMetricThreeLabel">Tempo de voo</span><strong id="eduMetricThree">—</strong></div>
+        </div>
+        <div class="edu-prediction-comparison" id="eduPredictionComparison" aria-live="polite">A comparação entre previsão e resultado aparecerá após o experimento.</div>
         <div class="edu-explanation" id="eduExplanation" aria-live="polite">As explicações e os valores calculados aparecerão aqui depois de uma experiência.</div>
       </div>
+    </div>
+    <div class="learning-card edu-discussion-card">
+      <h3>DISCUSSÃO E CONCLUSÃO</h3>
+      <p id="eduConclusionPrompt">Que evidência do gráfico sustenta sua explicação? Quais hipóteses do modelo podem limitar a conclusão?</p>
+      <label for="eduConclusion">Conclusão da turma</label>
+      <textarea id="eduConclusion" rows="3" placeholder="Registre a conclusão para esta experiência..." maxlength="1200"></textarea>
+      <button class="tab-btn" id="eduRecordConclusion" type="button">Registrar conclusão</button>
+      <p class="sandbox-note" id="eduConclusionStatus" aria-live="polite">A conclusão ficará vinculada ao experimento selecionado.</p>
     </div>
     <div class="learning-card edu-history-card">
       <div class="learning-row"><h3>3. Histórico e comparação</h3><div class="edu-actions"><button class="tab-btn" id="eduCompareBtn" type="button">Comparar com última</button><button class="tab-btn" id="eduClearHistoryBtn" type="button">Limpar histórico</button></div></div>
@@ -299,8 +325,41 @@ A mira mostra apenas o início da trajetória.</div>
 .edu-guide-details strong{color:#f2c14e}
 .teacher-mode .lab-gamification{display:none}
 .teacher-mode .lab-level-box{grid-template-columns:1fr}
+.edu-stagebar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;list-style:none;padding:0;margin:4px 0 14px}
+.edu-stagebar li{display:flex;align-items:center;gap:8px;color:#8fa3b8;border-bottom:1px solid #334155;padding:8px 4px;font-size:12px;font-weight:700}
+.edu-stagebar li span{display:grid;place-items:center;width:27px;height:27px;border:1px solid #42556a;border-radius:50%;font:700 12px monospace}
+.edu-stagebar li.active{color:#4fd1e8;border-color:#4fd1e8}
+.edu-stagebar li.active span,.edu-stagebar li.done span{background:#4fd1e8;color:#07141a;border-color:#4fd1e8}
+.edu-stagebar li.done{color:#78f0c1;border-color:#28685d}
+.edu-class-question{margin:8px 0;padding:9px 10px;background:#16202b;border-radius:7px;color:#c9d7e5;font-size:12px;line-height:1.45}
+.edu-result-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.edu-result-card{min-width:0;padding:10px;background:#0b1722;border:1px solid #173b53;border-radius:8px}
+.edu-result-card span{display:block;color:#9eb0c2;font-size:11px}
+.edu-result-card strong{display:block;margin-top:5px;color:#edf2f7;font:700 17px Oswald,sans-serif;overflow-wrap:anywhere}
+.edu-prediction-comparison{margin-top:10px;padding:11px;border:1px solid #173b53;border-radius:8px;background:#0b1722;color:#c9d7e5;font-size:13px;line-height:1.5;white-space:pre-line}
+.edu-discussion-card p{color:#c9d7e5;font-size:13px;line-height:1.5}
+#eduConclusion{display:block;width:100%;resize:vertical;padding:10px;border:1px solid #334155;border-radius:7px;background:#0b1118;color:#edf2f7;font:13px system-ui,sans-serif}
+.edu-discussion-card #eduRecordConclusion{margin-top:8px}
+.teacher-mode .app{display:flex;flex-direction:column}
+.teacher-mode .app-header{order:0}
+.teacher-mode #learningHub{order:1;margin-top:4px;border-color:#2f7467;box-shadow:0 0 0 1px #163c37}
+.teacher-mode #campaignView,.teacher-mode #sandboxView,.teacher-mode #labView{order:2}
+.teacher-mode #eduTitle{color:#78f0c1}
+.teacher-mode .learning-hub .phase-desc:after{content:''}
+@media(max-width:700px){.edu-stagebar{gap:4px}.edu-stagebar li{gap:5px;font-size:10px}.edu-result-grid{grid-template-columns:1fr}.edu-discussion-card #eduRecordConclusion{width:100%;min-height:44px}}
 </style>
-<script>(()=>{
+<script src="physics/kinematics.js"></script>
+<script src="education/guides.js"></script>
+<script>(()=> {
+const {
+  computeDistanceAt,
+  finalVelocity,
+  stepAlongCurve:calculateCurveStep,
+  computeProjectileState,
+  computeProjectileFlightTime,
+  computeProjectileMaxHeight,
+  computeProjectileRange
+}=window.RacetrackPhysics;
 // Tracks, phases and journal definitions + track generation utilities
 const phases = [
   {id:'p1', module:1, type:'uniform', T:3.0, target:180, tol:8,
@@ -604,9 +663,10 @@ function getTrack(phase){
   return trackCache.get(cacheKey);
 }
 
-function computeDistanceAt(phase,t,param){const clampedT=Math.min(t,phase.T);return phase.type==='uniform'?param*clampedT:0.5*param*clampedT*clampedT;}
-function finalVelocity(phase,param){return phase.type==='uniform'?param:param*phase.T;}
-function stepAlongCurve(track,s,v,dt,g,mu){const pt=pointAtArcLength(track,s);const theta=pt.theta;const aGravity=-g*Math.sin(theta);const aFriction=(Math.abs(v)>1e-4)?-mu*g*Math.cos(theta)*Math.sign(v):0;const aTotal=aGravity+aFriction;let vNew=v+aTotal*dt;let sNew=s+vNew*dt;if(sNew<0){sNew=0;vNew=0;}if(sNew>track.totalLength){sNew=track.totalLength;vNew=0;}return{s:sNew,v:vNew};}
+function stepAlongCurve(track,s,v,dt,g,mu){
+  const {theta}=pointAtArcLength(track,s);
+  return calculateCurveStep({s,v,dt,gravity:g,friction:mu,theta,totalLength:track.totalLength});
+}
 function trackNormalForce(g,theta,v,curvature,concaveUp){return concaveUp?g*Math.cos(theta)+v*v*curvature:g*Math.cos(theta)-v*v*curvature;}
 function createNormalizedTrackFromExpression(expression,start,end,resolution,friction,gravity){if(!expression)throw new Error('Expressão inválida');const trackDefinition={expression,domain:[start,end],resolution,friction,gravity};return normalizeTrackDefinition(trackDefinition);}
 // DEBUG flag removed
@@ -619,10 +679,16 @@ let state = {
   ghost: null,
   prediction: null,
   lastPredictionEvaluation: null,
+  projectileTrail: null,
+  projectileTrailConfig: null,
   running: false,
 };
-let eduState = {mode:'campaign', prediction:null, lastRecord:null, viewRecord:null, liveRecord:null, compareRecord:null, history:[], teacherMode:false};
+let eduState = {mode:'campaign', prediction:null, lastRecord:null, viewRecord:null, liveRecord:null, compareRecord:null, history:[], teacherMode:false, lessonStep:1};
 const EDU_HISTORY_KEY = 'racetrackPhysics.learningHistory.v1';
+const PROJECTILE_AIM_PREVIEW_SECONDS = 0.6;
+const PROJECTILE_AIM_PREVIEW_FLIGHT_FRACTION = 0.18;
+const PROJECTILE_TRAIL_MAX_SAMPLES = 360;
+let projectileSceneCache = null;
 
 const el = id => document.getElementById(id);
 let canvas, ctx, paramSlider, paramReadout, runBtn, nextBtn, feedback;
@@ -637,26 +703,6 @@ let mathSandboxDrop = { active:false, startTime:0, duration:520, fromOffset:46, 
 
 
 function currentPhase(){ return phases[state.phaseIndex]; }
-
-/* Movimento oblíquo: ângulos chegam em graus pela interface e são convertidos aqui. */
-function computeProjectileState(phase, speed, angle, time){
-  const rad = angle * Math.PI / 180;
-  const vx = speed * Math.cos(rad);
-  const vy0 = speed * Math.sin(rad);
-  const vy = vy0 - phase.gravity * time;
-  return {x:vx*time, y:phase.initialHeight + vy0*time - .5*phase.gravity*time*time, vx, vy0, vy, speed:Math.hypot(vx,vy)};
-}
-function computeProjectileFlightTime(phase, speed, angle){
-  const rad = angle * Math.PI / 180, vy0 = speed*Math.sin(rad), y0 = phase.initialHeight || 0;
-  return (vy0 + Math.sqrt(Math.max(0, vy0*vy0 + 2*phase.gravity*y0))) / phase.gravity;
-}
-function computeProjectileMaxHeight(phase, speed, angle){
-  const rad = angle * Math.PI / 180, vy0 = speed*Math.sin(rad);
-  return (phase.initialHeight || 0) + vy0*vy0/(2*phase.gravity);
-}
-function computeProjectileRange(phase, speed, angle){
-  return computeProjectileState(phase, speed, angle, computeProjectileFlightTime(phase,speed,angle)).x;
-}
 
 function evaluatePrediction(predicted, actual, reference){
   const safePredicted = Number.isFinite(predicted) ? predicted : 0;
@@ -811,6 +857,33 @@ function updateParamUI(){
   }
 }
 
+function updateTeacherProjectileOptions(){
+  const options=el('teacherProjectileOptions');
+  const fullTrajectory=el('teacherFullProjectileTrajectory');
+  if(!options||!fullTrajectory)return;
+  const available=eduState.teacherMode&&currentPhase().type==='projectile';
+  options.hidden=!available;
+  fullTrajectory.disabled=!available;
+}
+function syncTeacherModeUI(){
+  const enabled=eduState.teacherMode;
+  if(!enabled)eduState.liveRecord=null;
+  const toggle=el('eduTeacherToggle');
+  toggle.textContent=enabled?'Desativar Modo Professor':'Ativar Modo Professor';
+  toggle.setAttribute('aria-pressed',String(enabled));
+  el('learningHub').hidden=!enabled;
+  el('learningHub').setAttribute('aria-hidden',String(!enabled));
+  el('eduTeacherPill').hidden=!enabled;
+  el('eduTitle').textContent=enabled?'Roteiro de aula e laboratório ao vivo':'Centro de aprendizagem';
+  el('eduIntro').textContent=enabled
+    ?'Escolha um roteiro, use Campanha/Sandbox/Laboratório como simulador e conduza a turma por previsão, experimento e discussão.'
+    :'Planeje uma investigação, registre uma hipótese, execute a simulação e discuta os resultados.';
+  document.body.classList.toggle('teacher-mode',enabled);
+  updateTeacherProjectileOptions();
+  if(currentPhase().type==='projectile'&&!state.running)drawScene(ctx,canvas,currentPhase(),0,null,false);
+  if(enabled&&labPanelContent&&labPanelContent.style.display!=='none')showLabPanel('play');
+}
+
 function drawArrow(context,x1,y1,x2,y2,color,label){
   const a=Math.atan2(y2-y1,x2-x1); context.strokeStyle=color; context.fillStyle=color; context.lineWidth=2;
   context.beginPath(); context.moveTo(x1,y1); context.lineTo(x2,y2); context.stroke();
@@ -818,20 +891,42 @@ function drawArrow(context,x1,y1,x2,y2,color,label){
   if(label){ context.font='10px monospace'; context.fillText(label,x2+5,y2-4); }
 }
 function projectileSceneMetrics(cnv, phase, speed, angle){
-  const width = cnv.width, height = cnv.height, margin = 40;
-  const range = Math.max(phase.target + phase.tol + 10, computeProjectileRange(phase, speed, angle) * 1.12, 40);
-  const maxHeight = Math.max(computeProjectileMaxHeight(phase, speed, angle) * 1.15, 10);
-  const scale = Math.min((width - margin * 2) / range, (height - 55) / maxHeight);
-  const left = (width - range * scale) / 2, baseY = height - 30;
-  return {range, maxHeight, scale, left, baseY, toPixel(point){return {x:left + point.x * scale, y:baseY - point.y * scale};}};
+  const geometryKey=[cnv.width,cnv.height,phase.id,phase.target,phase.tol,phase.initialHeight||0,phase.initialX||0].join(':');
+  if(!projectileSceneCache||projectileSceneCache.geometryKey!==geometryKey){
+    const width=cnv.width,height=cnv.height,margin=40;
+    const range=Math.max(phase.target+phase.tol+10,40);
+    const maxHeight=Math.max((range)*0.3,(phase.initialHeight||0)+10,10);
+    const scale=Math.min((width-margin*2)/range,(height-55)/maxHeight);
+    const left=(width-range*scale)/2,baseY=height-30;
+    const metrics={range,maxHeight,scale,left,baseY,toPixel(point){return {x:left+point.x*scale,y:baseY-point.y*scale};}};
+    projectileSceneCache={geometryKey,trajectoryKey:null,metrics,flight:0,previewSamples:[]};
+  }
+  const trajectoryKey=[geometryKey,speed,angle,phase.gravity].join(':');
+  if(projectileSceneCache.trajectoryKey!==trajectoryKey){
+    const flight=computeProjectileFlightTime(phase,speed,angle);
+    const previewTime=Math.min(flight,PROJECTILE_AIM_PREVIEW_SECONDS,flight*PROJECTILE_AIM_PREVIEW_FLIGHT_FRACTION);
+    const previewSamples=[];
+    for(let i=0;i<=24;i++){
+      const point=computeProjectileState(phase,speed,angle,previewTime*i/24);
+      previewSamples.push({x:point.x,y:Math.max(0,point.y)});
+    }
+    projectileSceneCache.trajectoryKey=trajectoryKey;
+    projectileSceneCache.flight=flight;
+    projectileSceneCache.previewSamples=previewSamples;
+  }
+  return projectileSceneCache.metrics;
 }
 function drawProjectileCampaignScene(context, cnv, phase, time=0, speed=22, angle=45, revealDistance=false){
   const width = cnv.width, height = cnv.height;
-  const flight = computeProjectileFlightTime(phase, speed, angle);
-  const maxHeight = computeProjectileMaxHeight(phase, speed, angle);
-  const range = computeProjectileRange(phase, speed, angle);
   const metrics = projectileSceneMetrics(cnv, phase, speed, angle);
-  const prediction = getPredictionForCurrentPhase(phase);
+  const cache = projectileSceneCache;
+  const flight = cache.flight;
+  const trailConfig = state.projectileTrailConfig;
+  const hasMatchingTrail = trailConfig&&trailConfig.phaseId===phase.id&&trailConfig.speed===speed&&trailConfig.angle===angle;
+  const trail = hasMatchingTrail&&Array.isArray(state.projectileTrail)?state.projectileTrail:null;
+  const prediction = state.running?null:getPredictionForCurrentPhase(phase);
+  const completePredictionControl = el('teacherFullProjectileTrajectory');
+  const showCompletePrediction = !state.running&&trail&&trail.length>1&&eduState.teacherMode&&completePredictionControl&&completePredictionControl.checked;
   context.clearRect(0, 0, width, height);
   context.strokeStyle = 'rgba(124,147,172,.45)';
   context.lineWidth = 2;
@@ -852,28 +947,39 @@ function drawProjectileCampaignScene(context, cnv, phase, time=0, speed=22, angl
   context.fillStyle = '#F2C14E';
   context.font = '11px Oswald,sans-serif';
   context.fillText('ALVO', target.x - 14, metrics.baseY - 40);
-  context.strokeStyle = 'rgba(124,147,172,.55)';
-  context.lineWidth = 1.5;
-  context.setLineDash([4,4]);
-  context.beginPath();
-  for(let i=0;i<=100;i++){
-    const point = computeProjectileState(phase, speed, angle, flight * i / 100);
-    const pixel = metrics.toPixel({x:point.x,y:Math.max(0,point.y)});
-    if(i===0) context.moveTo(pixel.x,pixel.y); else context.lineTo(pixel.x,pixel.y);
+  const drawPath = (samples, color, lineWidth, dash=[])=>{
+    if(!samples||samples.length<2)return;
+    context.strokeStyle=color;
+    context.lineWidth=lineWidth;
+    context.setLineDash(dash);
+    context.beginPath();
+    samples.forEach((point,index)=>{
+      const pixel=metrics.toPixel({x:point.x,y:Math.max(0,point.y)});
+      if(index===0)context.moveTo(pixel.x,pixel.y);else context.lineTo(pixel.x,pixel.y);
+    });
+    context.stroke();
+    context.setLineDash([]);
+  };
+  if(state.running){
+    drawPath(trail,'#FF5A1F',2.5);
+  }else if(trail&&trail.length>1){
+    drawPath(trail,'#FF5A1F',2.5);
+    if(showCompletePrediction){
+      const theoreticalSamples=[];
+      for(let i=0;i<=100;i++){
+        const point=computeProjectileState(phase,speed,angle,flight*i/100);
+        theoreticalSamples.push({x:point.x,y:point.y});
+      }
+      drawPath(theoreticalSamples,'rgba(124,147,172,.72)',1.5,[4,4]);
+      context.fillStyle='#AAB8C8';
+      context.font='10px monospace';
+      context.fillText('PREVISÃO TEÓRICA · NÃO É O RASTRO REAL',12,68);
+    }
+  }else{
+    drawPath(cache.previewSamples,'rgba(124,147,172,.72)',1.5,[4,4]);
   }
-  context.stroke();
-  context.setLineDash([]);
-  const shownTime = clamp(Number(time) || 0, 0, flight);
-  context.strokeStyle = '#FF5A1F';
-  context.lineWidth = 2.5;
-  context.beginPath();
-  for(let i=0;i<=80;i++){
-    const point = computeProjectileState(phase, speed, angle, shownTime * i / 80);
-    const pixel = metrics.toPixel({x:point.x,y:Math.max(0,point.y)});
-    if(i===0) context.moveTo(pixel.x,pixel.y); else context.lineTo(pixel.x,pixel.y);
-  }
-  context.stroke();
-  const current = computeProjectileState(phase, speed, angle, shownTime);
+  const currentTime = trail&&trail.length?clamp(Number(trail[trail.length-1].t)||0,0,flight):(state.running?clamp(Number(time)||0,0,flight):0);
+  const current = computeProjectileState(phase, speed, angle, currentTime);
   const ball = metrics.toPixel({x:current.x,y:Math.max(0,current.y)});
   context.fillStyle = '#FF5A1F';
   context.beginPath();
@@ -882,11 +988,26 @@ function drawProjectileCampaignScene(context, cnv, phase, time=0, speed=22, angl
   context.strokeStyle = '#fff';
   context.lineWidth = 1;
   context.stroke();
+  const vectorScale = Math.min(metrics.scale, 52 / Math.max(current.speed, 1));
+  const vxEndX = ball.x + current.vx * vectorScale;
+  const vyEndY = ball.y - current.vy * vectorScale;
+  if(Math.abs(current.vx) > 0.05){
+    drawArrow(context, ball.x, ball.y, vxEndX, ball.y, '#4FD1E8', 'Vx');
+  }
+  if(Math.abs(current.vy) > 0.05){
+    drawArrow(context, vxEndX, ball.y, vxEndX, vyEndY, '#F2C14E', 'Vy');
+  }
+  if(current.speed > 0.05){
+    drawArrow(context, ball.x, ball.y, vxEndX, vyEndY, '#78F0C1', 'V');
+  }
+  context.fillStyle = '#9FB2C5';
+  context.font = '10px monospace';
+  context.fillText(`Vx = ${current.vx.toFixed(1)} · Vy = ${current.vy.toFixed(1)} unid/s`, 12, showCompletePrediction?84:36);
   const start = metrics.toPixel({x:0,y:0});
   context.fillStyle = '#8193A7';
   context.font = '10px monospace';
   context.fillText('LANÇAMENTO', Math.max(5,start.x - 10), metrics.baseY + 20);
-  context.fillText(`t = ${shownTime.toFixed(2)} s`, 12, 18);
+  context.fillText(`t = ${currentTime.toFixed(2)} s`, 12, 18);
   if(prediction !== null && Number.isFinite(prediction)){
     const marker = metrics.toPixel({x:prediction,y:0});
     context.fillStyle = '#A78BFA';
@@ -906,7 +1027,9 @@ function drawProjectileCampaignScene(context, cnv, phase, time=0, speed=22, angl
   if(revealDistance){
     context.fillStyle = '#4FD1E8';
     context.font = '11px monospace';
-    context.fillText(`Alcance: ${range.toFixed(1)} un · Altura máxima: ${maxHeight.toFixed(1)} un`, 12, 36);
+    const actualRange=computeProjectileRange(phase,speed,angle);
+    const actualMaxHeight=computeProjectileMaxHeight(phase,speed,angle);
+    context.fillText(`Alcance: ${actualRange.toFixed(1)} un · Altura máxima: ${actualMaxHeight.toFixed(1)} un`, 12, 52);
   }
 }
 function drawScene(context, cnv, phase, carUnits, ghostUnits, revealDistance){
@@ -1173,11 +1296,14 @@ function runProjectileCampaignSimulation(phase, speed, context, cnv, onDone){
   const started=performance.now();
   const duration=Math.min(4500,Math.max(1600,flight*900));
   const samples=[];
+  state.projectileTrail=samples;
+  state.projectileTrailConfig={phaseId:phase.id,speed,angle};
   function frame(now){
     const progress=clamp((now-started)/duration,0,1);
     const time=flight*progress;
     const point=computeProjectileState(phase,speed,angle,time);
     samples.push({t:time,x:point.x,y:Math.max(0,point.y),vx:point.vx,vy:point.vy,speed:point.speed});
+    if(samples.length>PROJECTILE_TRAIL_MAX_SAMPLES)samples.shift();
     if(samples.length%3===0||progress>=1) eduUpdateLiveGraph('campaign',samples,phase,speed,angle);
     drawProjectileCampaignScene(context,cnv,phase,time,speed,angle,progress>=1);
     if(progress<1){requestAnimationFrame(frame);return;}
@@ -1198,8 +1324,8 @@ function runSimulation(phase, param, context, cnv, ghostPoints, onDone){
   const animDuration = Math.min(Math.max(duration, 1.2), 4.5) * 1000;
 
   function frame(now){
-    const elapsedMs = now - startTime;
-    const simT = Math.min((elapsedMs/animDuration) * duration, duration);
+    const elapsedMs = Math.max(0,now-startTime);
+    const simT = Math.min(Math.max((elapsedMs/animDuration)*duration,0),duration);
     const carUnits = computeDistanceAt(phase, simT, param);
     points.push({t:simT, x:carUnits});
     if(points.length%3===0||elapsedMs>=animDuration) eduUpdateLiveGraph(context===sbCtx?'sandbox':'campaign',points,phase,param,null);
@@ -1248,6 +1374,9 @@ function loadPhase(idx){
   state.ghost = null;
   state.prediction = null;
   state.lastPredictionEvaluation = null;
+  state.projectileTrail = null;
+  state.projectileTrailConfig = null;
+  el('teacherFullProjectileTrajectory').checked = false;
   const phase = currentPhase();
   if(phase.track){
     phase.track = normalizeTrackDefinition(phase.track);
@@ -1273,6 +1402,7 @@ function loadPhase(idx){
   nextBtn.disabled = true;
   runBtn.disabled = false;
   updateParamUI();
+  updateTeacherProjectileOptions();
   if(eduState.mode==='campaign') eduUpdateMode('campaign');
   drawScene(ctx, canvas, phase, 0, null);
 }
@@ -1295,6 +1425,11 @@ function attemptRun(){
   runBtn.disabled = true;
   paramSlider.disabled = true;
   if(campaignAngleSlider) campaignAngleSlider.disabled = true;
+  if(phase.type==='projectile'){
+    state.projectileTrail=[];
+    state.projectileTrailConfig={phaseId:phase.id,speed:param,angle:campaignAngleSlider?+campaignAngleSlider.value:45};
+    drawScene(ctx,canvas,phase,0,null,false);
+  }
   feedback.className = 'feedback';
   feedback.textContent = 'Executando teste...';
 
@@ -1360,6 +1495,7 @@ function attemptRun(){
         ? 'O carrinho ultrapassou o alvo.'
         : 'O carrinho passou do alvo antes de começar a voltar.'} Você previu: ${predictionEval.predicted.toFixed(1)} un. Resultado: ${predictionEval.actual.toFixed(1)} un. Erro: ${predictionEval.absoluteError.toFixed(1)} un. ${qualityText}`;
     }
+    if(phase.type==='projectile')drawScene(ctx,canvas,phase,finalDist,null,true);
   });
 }
 
@@ -1555,7 +1691,7 @@ function saveLabProgress(){try{localStorage.setItem(LAB_STORAGE_KEY,JSON.stringi
 function drawShopPreviews(){document.querySelectorAll('.lab-skin-preview').forEach(c=>{const cctx=c.getContext('2d');cctx.clearRect(0,0,c.width,c.height);drawLabSkin(cctx,c.width/2,c.height/2,Math.min(c.width,c.height)/2-3,c.dataset.skin);});}
 function preloadLabSkins(){LAB_SKINS.forEach(s=>{if(!s.image)return;const img=new Image();img.onload=()=>{skinImages.set(s.id,img);drawShopPreviews();drawLabScene();};img.onerror=()=>{skinImages.set(s.id,null);drawShopPreviews();};img.src=s.image;});}
 
-let lab={progress:defaultLabProgress(),number:1,hole:null,running:false,showVectors:true,projectile:null,aimVisible:true,shotsLeft:3,stageScore:0,combo:1,animationFrame:null,lastPath:null,phase:'ready',shotId:0,initialized:false,landed:false,recentSolutions:[]};
+let lab={progress:defaultLabProgress(),number:1,hole:null,running:false,showVectors:true,projectile:null,observedTrail:[],aimVisible:true,shotsLeft:3,stageScore:0,combo:1,animationFrame:null,lastPath:null,phase:'ready',shotId:0,initialized:false,landed:false,recentSolutions:[]};
 let labCanvas,labCtx,labSpeed,labAngle,labSpeedOut,labAngleOut,labLaunchBtn,labRetryBtn,labNextBtn,labVectorsBtn,labFeedback,labTitle,labChallengeText,labPanelContent,labPlayPanel;
 let labTargetScore,labShots,labStageScore,labShotsOut,labHoleDistance;
 
@@ -1714,6 +1850,11 @@ function drawLabScene(){
   drawHole(ctx,sc,lab.hole);
   const start=worldToPixel(sc,LAB_START);ctx.fillStyle='rgba(124,147,172,.45)';ctx.fillRect(start.x-2,start.y+9,4,ground.y-start.y-9);
   if(lab.aimVisible&&!lab.running&&!lab.landed)drawShortAim();
+  if(lab.observedTrail.length>1){
+    ctx.strokeStyle='#FF5A1F';ctx.lineWidth=2.5;ctx.beginPath();
+    lab.observedTrail.forEach((point,index)=>{const pixel=worldToPixel(sc,point);if(index===0)ctx.moveTo(pixel.x,pixel.y);else ctx.lineTo(pixel.x,pixel.y);});
+    ctx.stroke();
+  }
   const ballWorld=lab.projectile || currentStartState();
   const q=worldToPixel(sc,ballWorld);drawLabSkin(ctx,q.x,q.y,10,lab.progress.equippedSkin);
   if(lab.running&&lab.showVectors){drawArrow(ctx,q.x,q.y,q.x+Math.max(-60,Math.min(60,ballWorld.vx*2)),q.y,'#4fd1e8','Vx');if(Math.abs(ballWorld.vy)>.05)drawArrow(ctx,q.x,q.y,q.x,q.y-Math.max(-60,Math.min(60,ballWorld.vy*2)),'#f2c14e','Vy');}
@@ -1807,7 +1948,7 @@ function showLabPanel(kind){
 function resetLabStage(preserveCombo=false){
   if(!lab.hole||!lab.initialized)return;
   if(lab.animationFrame)cancelAnimationFrame(lab.animationFrame);
-  lab.animationFrame=null;lab.shotId++;lab.running=false;lab.projectile=currentStartState();lab.aimVisible=true;lab.landed=false;lab.shotsLeft=lab.hole.par;lab.stageScore=0;if(!preserveCombo)lab.combo=1;lab.lastPath=null;lab.phase='ready';labLaunchBtn.disabled=false;labRetryBtn.style.display='none';labNextBtn.style.display='none';labFeedback.className='feedback';labFeedback.textContent='Ajuste a velocidade e o ângulo. A mira sempre sai do centro da bola.';refreshLabUI();requestAnimationFrame(()=>{if(lab.initialized&&lab.hole&&!lab.running){lab.aimVisible=true;drawLabScene();}});
+  lab.animationFrame=null;lab.shotId++;lab.running=false;lab.projectile=currentStartState();lab.observedTrail=[];lab.aimVisible=true;lab.landed=false;lab.shotsLeft=lab.hole.par;lab.stageScore=0;if(!preserveCombo)lab.combo=1;lab.lastPath=null;lab.phase='ready';labLaunchBtn.disabled=false;labRetryBtn.style.display='none';labNextBtn.style.display='none';labFeedback.className='feedback';labFeedback.textContent='Ajuste a velocidade e o ângulo. A mira sempre sai do centro da bola.';refreshLabUI();requestAnimationFrame(()=>{if(lab.initialized&&lab.hole&&!lab.running){lab.aimVisible=true;drawLabScene();}});
 }
 function startNextHole(){eduMarkPredictionStale('O desafio e a gravidade podem ter mudado. Registre uma nova hipótese para este lançamento.','lab');lab.number++;lab.progress.challengeNumber=lab.number;lab.hole=makeValidHole(lab.number,lab.recentSolutions);resetLabStage(true);saveLabProgress();requestAnimationFrame(()=>{if(lab.initialized&&!lab.running){lab.aimVisible=true;lab.landed=false;drawLabScene();}});}
 function scoreHole(distanceError,shots,speed,angle){const hole=lab.hole;if(shots===1&&distanceError<=hole.hole.radius+.2)lab.progress.holesInOne++;const precision=Math.max(0,1-distanceError/Math.max(hole.hole.radius*3,6)),shotBonus=Math.max(0,hole.par-shots+1)*70,precisionBonus=Math.round(precision*90),base=180+hole.difficulty*22+shotBonus+precisionBonus,reward=Math.max(1,lab.combo)*base;lab.stageScore=reward;lab.progress.coins+=reward;lab.progress.bestScore=Math.max(lab.progress.bestScore,reward);lab.combo=Math.min(8,lab.combo+1);lab.progress.bestCombo=Math.max(lab.progress.bestCombo,lab.combo);lab.progress.completed++;lab.recentSolutions=[{speed,angle},...lab.recentSolutions].slice(0,5);return reward;}
@@ -1826,16 +1967,18 @@ function launchLab(){
   for(let i=0;i<=180;i++)points.push(projectileState(speed,angle,flight*i/180));
   const landing={...points[points.length-1],y:0,time:flight};
   const path={points,flight,range:landing.x-LAB_START.x,maxHeight:projectileMaxHeight(speed,angle),landing,shotsUsed:lab.hole.par-lab.shotsLeft+1,speed,angle};
-  const shotId=++lab.shotId;lab.running=true;lab.phase='flying';lab.aimVisible=false;labLaunchBtn.disabled=true;lab.lastPath=path;lab.projectile={...points[0]};
+  const shotId=++lab.shotId;lab.running=true;lab.phase='flying';lab.aimVisible=false;labLaunchBtn.disabled=true;lab.lastPath=path;lab.projectile={...points[0]};lab.observedTrail=[{...lab.projectile}];
   const start=performance.now(),duration=Math.min(6200,Math.max(1800,flight*980));
   const frame=now=>{
     if(!lab.running||shotId!==lab.shotId)return;
     const progress=Math.min(1,Math.max(0,(now-start)/duration));
     const t=progress*flight;
-    lab.projectile=projectileState(speed,angle,t);updateLabHud(lab.projectile);drawLabScene();
+    lab.projectile=projectileState(speed,angle,t);
+    lab.observedTrail.push({...lab.projectile});
+    if(lab.observedTrail.length>PROJECTILE_TRAIL_MAX_SAMPLES)lab.observedTrail.shift();
+    updateLabHud(lab.projectile);drawLabScene();
     if(Math.round(progress*100)%3===0||progress>=1){
-      const count=Math.max(2,Math.min(points.length,Math.ceil(progress*(points.length-1))+1));
-      eduUpdateLiveGraph('lab',points.slice(0,count),null,speed,angle);
+      eduUpdateLiveGraph('lab',lab.observedTrail,null,speed,angle);
     }
     if(progress<1){lab.animationFrame=requestAnimationFrame(frame);return;}
     lab.running=false;lab.animationFrame=null;lab.projectile=landing;drawLabScene();
@@ -1844,7 +1987,7 @@ function launchLab(){
         ...eduCurrentParameters('lab'),speed,angle,gravity:lab.hole.gravity
       },{
         value:path.range,unit:'m',maxHeight:path.maxHeight,flight:path.flight,target:lab.hole.distance
-      },path.points,null,predictionSnapshot);
+      },lab.observedTrail,null,predictionSnapshot);
     }catch(error){
       console.error('Não foi possível registrar a experiência do Laboratório no Centro de Aprendizagem.',error);
       el('eduPredictionStatus').textContent='O lançamento terminou, mas não foi possível registrar a experiência no Centro de Aprendizagem.';
@@ -1892,9 +2035,11 @@ function loadEduHistory(){
 function saveEduHistory(){
   try{
     localStorage.setItem(EDU_HISTORY_KEY, JSON.stringify(eduState.history.slice(0, 50)));
+    return true;
   }catch(error){
     console.warn('Não foi possível salvar o histórico educacional.', error);
     el('eduComparison').textContent = 'O navegador bloqueou o armazenamento local. A experiência permanece disponível nesta sessão.';
+    return false;
   }
 }
 function eduCurrentParameters(mode=eduState.mode){
@@ -1940,6 +2085,16 @@ function eduQuestionText(question){
     time:'Quanto tempo durará o movimento?'
   })[question] || 'Qual resultado você prevê?';
 }
+function eduUpdateLessonStep(step){
+  eduState.lessonStep=Math.max(1,Math.min(3,step));
+  [1,2,3].forEach((value,index)=>{
+    const item=el(['eduStepPredict','eduStepExperiment','eduStepDiscuss'][index]);
+    item.classList.toggle('active',value===eduState.lessonStep);
+    item.classList.toggle('done',value<eduState.lessonStep);
+    if(value===eduState.lessonStep)item.setAttribute('aria-current','step');
+    else item.removeAttribute('aria-current');
+  });
+}
 function eduMarkPredictionStale(message,mode=eduState.mode){
   if(!eduState.prediction || eduState.prediction.stale || (mode&&eduState.prediction.mode!==mode)) return;
   eduState.prediction.stale=true;
@@ -1981,6 +2136,7 @@ function eduUpdateMode(mode){
   }
 }
 function eduRecordPrediction(){
+  if(!eduState.teacherMode)return;
   const input = el('eduPredictionValue');
   const value = Number(input.value);
   const mode = eduState.mode;
@@ -2004,59 +2160,22 @@ function eduRecordPrediction(){
   };
   if(mode === 'campaign'){
     const phase = currentPhase();
-    state.prediction = {phaseId:phase.id,distance:value,param:+paramSlider.value,angle:phase.type === 'projectile' && campaignAngleSlider ? +campaignAngleSlider.value : null};
+    state.prediction = question==='distance'||question==='range'
+      ?{phaseId:phase.id,distance:value,param:+paramSlider.value,angle:phase.type === 'projectile' && campaignAngleSlider ? +campaignAngleSlider.value : null}
+      :null;
     drawScene(ctx, canvas, phase, 0, null, false);
   }
   el('eduPredictionStatus').textContent = `Hipótese registrada para ${eduQuestionText(question)} (${mode === 'lab' ? 'Laboratório' : mode === 'campaign' ? 'Campanha' : 'Sandbox'}). Execute o experimento; uma previsão incorreta não gera penalidade.`;
+  eduUpdateLessonStep(2);
 }
 function eduRenderGuideDetails(guide){
-  const guides={
-    uniform:{
-      objective:'Investigar como a velocidade e o tempo afetam a posição no movimento uniforme.',
-      question:'Mantendo a velocidade constante, como a posição muda se o tempo dobrar?',
-      parameters:'Velocidade constante e tempo de motor ligado; unidades didáticas do Sandbox.',
-      procedure:'Registre a previsão com 40 un/s e 3 s. Execute; depois altere somente o tempo para 4 s e compare os registros.',
-      model:'O modelo prevê d = v·t. Não use esta relação para descrever fases aceleradas.',
-      discussion:'A posição inicial é considerada zero? A distância dobrou na mesma proporção do tempo?'
-    },
-    muv:{
-      objective:'Investigar como aceleração e tempo afetam o deslocamento a partir do repouso.',
-      question:'Mantendo a aceleração constante, o que acontece com o deslocamento ao dobrar o tempo?',
-      parameters:'Aceleração constante de 10 un/s² e tempo de aceleração; unidades didáticas do Sandbox.',
-      procedure:'Registre a previsão com 10 un/s² e 3 s. Execute; repita mudando somente o tempo para 4 s.',
-      model:'Para partida do repouso e aceleração constante, d = ½at².',
-      discussion:'O deslocamento varia linearmente ou com o quadrado do tempo? Que hipótese inicial permite usar esta equação?'
-    },
-    projectile:{
-      objective:'Investigar como o ângulo altera o alcance e a altura máxima do lançamento.',
-      question:'Mantendo V₀ constante, em qual ângulo o alcance será maior neste cenário?',
-      parameters:'Velocidade inicial de 22 un/s, ângulo em graus e gravidade definida pela fase da Campanha.',
-      procedure:'Registre uma previsão de alcance a 45°. Execute; depois altere somente o ângulo e repita. Para investigar a altura, selecione essa grandeza antes de registrar a hipótese.',
-      model:'Movimento oblíquo ideal sem resistência do ar. O ângulo de alcance máximo de 45° só vale quando as alturas inicial e final são iguais.',
-      discussion:'Como as componentes Vx e Vy variam com o ângulo? A fase tem alturas inicial e final iguais?'
-    },
-    gravity:{
-      objective:'Investigar como diferentes valores de gravidade afetam o tempo de voo e o alcance.',
-      question:'Com velocidade e ângulo iguais, como um valor menor de g altera o alcance?',
-      parameters:'Velocidade inicial, ângulo, altura inicial de 7 m e gravidade indicada no desafio do Laboratório.',
-      procedure:'Registre a hipótese e execute uma tacada. Avance para um desafio com outro ambiente gravitacional; mantenha velocidade e ângulo e compare os registros. Confira os valores de g antes de concluir.',
-      model:'Lançamento oblíquo ideal sem resistência do ar. Para comparar, registre a gravidade de cada desafio: o alvo e outras características procedurais também podem mudar.',
-      discussion:'O tempo de voo e o alcance aumentaram ou diminuíram? Que variáveis além de g mudaram entre os desafios?'
-    },
-    mathtrack:{
-      objective:'Relacionar a forma e a inclinação da pista matemática ao movimento calculado.',
-      question:'Em quais trechos a inclinação favorece aceleração ou desaceleração do carrinho?',
-      parameters:'Pista sin(x/20)·16, domínio de 0 a 260, gravidade de 14 e atrito de 0,04 (unidades do modelo).',
-      procedure:'Registre uma previsão de distância. Execute; depois carregue uma rampa linear nos exemplos, mantenha velocidade e demais parâmetros e compare os registros.',
-      model:'Modelo simplificado com aceleração tangencial por gravidade e atrito. Não representa todas as forças de contato e rolamento de um veículo real.',
-      discussion:'Como a inclinação e o atrito afetam o movimento? A energia mecânica se conserva neste modelo?'
-    }
-  };
-  const content=guides[guide];
+  const content=window.RacetrackLessons[guide];
   const container=el('eduGuideDetails');
   container.replaceChildren();
-  if(!content) return;
-  [['Objetivo',content.objective],['Pergunta',content.question],['Parâmetros',content.parameters],['Procedimento',content.procedure],['Modelo esperado',content.model],['Para discutir',content.discussion]].forEach(([label,text])=>{
+  if(!content){el('eduDiscussionPrompt').textContent='';return;}
+  el('eduDiscussionPrompt').textContent=`Perguntas para a turma: ${content.discussion}`;
+  el('eduConclusionPrompt').textContent=`Discussão: ${content.discussion} Que evidência do gráfico sustenta a conclusão?`;
+  [['Assunto',content.subject],['Objetivo',content.objective],['Pergunta',content.question],['Parâmetros',content.parameters],['Procedimento',content.procedure],['Modelo e limitações',content.model],['Para discutir',content.discussion]].forEach(([label,text])=>{
     const paragraph=document.createElement('p');
     const heading=document.createElement('strong');
     heading.textContent=`${label}: `;
@@ -2065,11 +2184,25 @@ function eduRenderGuideDetails(guide){
   });
 }
 function eduLoadGuidedExperiment(){
+  if(!eduState.teacherMode)return;
   if(state.running||sbRunning||lab.running){
     el('eduPredictionStatus').textContent='Aguarde a simulação atual terminar antes de carregar outro roteiro.';
     return;
   }
   const guide = el('eduGuidedSelect').value;
+  const projectilePhaseIndex = phases.findIndex(phase=>phase.type==='projectile');
+  const keepCurrentProjectile = guide==='projectile'&&eduState.mode==='campaign'&&currentPhase().type==='projectile';
+  const openProjectilePhase = guide==='projectile'&&!keepCurrentProjectile;
+  if(openProjectilePhase){
+    if(projectilePhaseIndex<0){
+      el('eduPredictionStatus').textContent='Não há uma fase de lançamento disponível na Campanha para este roteiro.';
+      return;
+    }
+    if(!confirm('Este roteiro precisa de uma fase de lançamento da Campanha. Deseja trocar a fase atual? As tentativas desta fase serão reiniciadas.')){
+      el('eduPredictionStatus').textContent='Roteiro não carregado. A fase e os parâmetros atuais foram preservados.';
+      return;
+    }
+  }
   eduMarkPredictionStale('O roteiro alterou a configuração do experimento. A hipótese anterior foi preservada, mas está desatualizada; registre uma nova previsão.',null);
   if(guide === 'uniform'){
     el('tabSandbox').click();
@@ -2088,8 +2221,10 @@ function eduLoadGuidedExperiment(){
     el('eduQuestion').value='distance';
     el('eduExplanation').textContent = 'Roteiro de movimento acelerado carregado. Registre uma hipótese antes de executar; depois altere uma variável por vez.';
   }else if(guide === 'projectile'){
-    el('tabCampaign').click();
-    loadPhase(13);
+    if(openProjectilePhase){
+      el('tabCampaign').click();
+      loadPhase(projectilePhaseIndex);
+    }
     paramSlider.value = '22';
     if(campaignAngleSlider) campaignAngleSlider.value = '45';
     state.prediction = null;
@@ -2116,9 +2251,12 @@ function eduLoadGuidedExperiment(){
     el('eduExplanation').textContent = 'Roteiro de pista matemática carregado. Registre uma hipótese antes de executar e compare formatos alterando somente a expressão.';
   }
   eduUpdateMode(eduState.mode);
-  el('eduQuestion').value=eduAvailableQuestions().includes(el('eduQuestion').value)?el('eduQuestion').value:eduAvailableQuestions()[0];
+  const lesson=window.RacetrackLessons[guide];
+  const requestedQuestion=lesson?lesson.defaultQuestion:null;
+  el('eduQuestion').value=eduAvailableQuestions().includes(requestedQuestion)?requestedQuestion:eduAvailableQuestions()[0];
   el('eduPredictionUnit').textContent=el('eduQuestion').value==='time'?'s':eduState.mode==='lab'?'m':'un';
   eduRenderGuideDetails(guide);
+  eduUpdateLessonStep(1);
   if(eduState.prediction&&eduState.prediction.stale){
     el('eduPredictionStatus').textContent='Configuração do roteiro carregada. A hipótese anterior está desatualizada; registre uma nova antes de executar.';
   }else{
@@ -2203,14 +2341,91 @@ function eduBuildExplanation(record, phase){
   else if(phase && phase.type === 'projectile') lines.push(`Modelo ideal sem resistência do ar: x(t)=V₀ cos(θ)t e y(t)=y₀+V₀ sen(θ)t−½gt². Velocidade inicial ${parameters.parameter ?? '—'}; ângulo ${parameters.angle ?? '—'}°; gravidade ${parameters.gravity ?? phase.gravity} m/s².`);
   else if(phase && phase.track) lines.push(`Pista matemática com gravidade ${parameters.gravity ?? phase.track.gravity} e atrito ${parameters.friction ?? phase.track.friction}. O modelo é simplificado: aceleração tangencial por gravidade e atrito; não representa todos os efeitos de contato/rolamento de um veículo real.`);
   else if(record.mode === 'lab') lines.push(`Movimento oblíquo ideal: Vx=V₀ cos(θ), Vy=V₀ sen(θ)−gt. O alcance depende da velocidade, do ângulo, da gravidade e da altura inicial (${LAB_START.y} m). Resistência do ar não é incluída.`);
-  if(result.maxHeight !== undefined) lines.push(`Altura máxima calculada: ${Number(result.maxHeight).toFixed(2)} m.`);
+  if(result.maxHeight !== undefined) lines.push(`Altura máxima calculada: ${Number(result.maxHeight).toFixed(2)} ${record.mode==='lab'?'m':'un'}.`);
   if(result.flight !== undefined) lines.push(`Tempo de voo calculado: ${Number(result.flight).toFixed(2)} s.`);
   if(result.target !== undefined) lines.push(`Alvo da fase: ${Number(result.target).toFixed(2)}; tolerância: ${phase ? phase.tol : '—'}.`);
-  lines.push('Use o gráfico para acompanhar como a grandeza selecionada varia com o tempo. A previsão é uma hipótese; errar faz parte da investigação.');
+  lines.push(el('eduGraphSeries').value==='trajectory'
+    ?'Use o gráfico y(x) para relacionar altura e posição horizontal durante o lançamento. A previsão é uma hipótese; errar faz parte da investigação.'
+    :'Use o gráfico para acompanhar como a grandeza selecionada varia com o tempo. A previsão é uma hipótese; errar faz parte da investigação.');
   return lines.join('\n');
 }
+function eduRenderResultSummary(record){
+  if(!record){
+    [['Alcance calculado','eduMetricOneLabel','eduMetricOne'],['Altura máxima','eduMetricTwoLabel','eduMetricTwo'],['Tempo de voo','eduMetricThreeLabel','eduMetricThree']].forEach(([label,labelId,valueId])=>{
+      el(labelId).textContent=label;
+      el(valueId).textContent='—';
+    });
+    return;
+  }
+  const result=record.result||{};
+  const samples=Array.isArray(record.samples)?record.samples:[];
+  const unit=result.unit||'';
+  const projectile=record&&(record.mode==='lab'||record.phaseType==='projectile'||(record.parameters&&record.parameters.type==='projectile'));
+  let cards;
+  if(projectile){
+    const lastSample=samples[samples.length-1];
+    const maximumHeight=samples.reduce((maximum,point)=>Math.max(maximum,Number(point.y)||0),0);
+    cards=[
+      ['Alcance calculado',Number.isFinite(Number(result.range))?result.range:lastSample&&lastSample.x,record.mode==='lab'?'m':'un'],
+      ['Altura máxima',Number.isFinite(Number(result.maxHeight))?result.maxHeight:maximumHeight,record.mode==='lab'?'m':'un'],
+      ['Tempo de voo',Number.isFinite(Number(result.flight))?result.flight:lastSample&&lastSample.t,'s']
+    ];
+  }else{
+    const maxSpeed=samples.reduce((maximum,point)=>Math.max(maximum,Number(point.speed)||0),0);
+    const duration=samples.length?Number(samples[samples.length-1].t):NaN;
+    cards=[
+      ['Resultado calculado',result.value,unit],
+      ['Velocidade máxima',maxSpeed,record.mode==='lab'?'m/s':'un/s'],
+      ['Duração da simulação',duration,'s']
+    ];
+  }
+  cards.forEach((card,index)=>{
+    el(`eduMetric${['One','Two','Three'][index]}Label`).textContent=card[0];
+    el(`eduMetric${['One','Two','Three'][index]}`).textContent=Number.isFinite(Number(card[1]))?`${Number(card[1]).toFixed(2)} ${card[2]}`.trim():'—';
+  });
+}
+function eduRenderPredictionComparison(record){
+  const container=el('eduPredictionComparison');
+  if(!record){
+    container.textContent='A comparação entre previsão e resultado aparecerá após o experimento.';
+    return;
+  }
+  if(record.prediction===null||record.prediction===undefined){
+    container.textContent='Este experimento não tem previsão associada. Registre uma hipótese para a próxima execução.';
+    return;
+  }
+  const actual=Number(record.result.value),predicted=Number(record.prediction);
+  const unit=record.result.unit||'';
+  const difference=Math.abs(actual-predicted);
+  const lines=[
+    `Previsão da turma: ${predicted.toFixed(2)} ${unit}`.trim(),
+    `Resultado do modelo: ${actual.toFixed(2)} ${unit}`.trim(),
+    `Diferença: ${Number.isFinite(difference)?`${difference.toFixed(2)} ${unit}`.trim():'fora do intervalo numérico representável'}`
+  ];
+  if(actual!==0){
+    const relativeError=difference/Math.abs(actual)*100;
+    if(Number.isFinite(relativeError))lines[2]+=` (${relativeError.toFixed(1)}%)`;
+  }else{
+    lines[2]+=' (erro relativo não definido para resultado zero)';
+  }
+  container.textContent=lines.join('\n');
+}
+function eduGraphAxisDescription(){
+  return el('eduGraphSeries').value==='trajectory'?'eixo horizontal: posição x (trajetória y(x))':'eixo horizontal: tempo';
+}
 function eduRecordExperiment(mode, title, parameters, result, rawSamples, phase, predictionSnapshot=eduSnapshotPrediction()){
+  if(!eduState.teacherMode)return;
   const measured = {...(result || {})};
+  const initialValue=Number(measured.value);
+  const projectile=mode==='lab'||(phase&&phase.type==='projectile');
+  if(projectile){
+    if(!Number.isFinite(Number(measured.range)))measured.range=initialValue;
+    if(phase&&phase.type==='projectile'){
+      const speed=Number(parameters.parameter),angle=Number(parameters.angle);
+      measured.maxHeight=computeProjectileMaxHeight(phase,speed,angle);
+      measured.flight=computeProjectileFlightTime(phase,speed,angle);
+    }
+  }
   const pendingPrediction=predictionSnapshot;
   const sameModePrediction=pendingPrediction&&pendingPrediction.mode===mode;
   const activePrediction=sameModePrediction&&!pendingPrediction.stale&&eduParametersMatch(pendingPrediction.parameters,parameters)?pendingPrediction:null;
@@ -2231,6 +2446,8 @@ function eduRecordExperiment(mode, title, parameters, result, rawSamples, phase,
     result:measured,prediction:actualPrediction,
     predictionQuestion:activePrediction?activePrediction.question:null,
     predictionParameters:activePrediction?activePrediction.parameters:null,
+    phaseType:phase?phase.type:mode==='lab'?'projectile':null,
+    conclusion:null,
     samples
   };
   record.explanation = eduBuildExplanation(record, phase || null);
@@ -2243,8 +2460,13 @@ function eduRecordExperiment(mode, title, parameters, result, rawSamples, phase,
   renderEduHistory();
   el('eduHistorySelect').value = record.id;
   drawEduGraph();
+  eduRenderResultSummary(record);
+  eduRenderPredictionComparison(record);
   el('eduExplanation').textContent = record.explanation;
-  el('eduGraphNote').textContent = `${samples.length} amostras · ${new Date(record.timestamp).toLocaleString('pt-BR')} · a escala horizontal representa o tempo da simulação.`;
+  el('eduGraphNote').textContent = `${samples.length} amostras · ${new Date(record.timestamp).toLocaleString('pt-BR')} · ${eduGraphAxisDescription()}.`;
+  el('eduConclusion').value='';
+  el('eduConclusionStatus').textContent='Registre uma conclusão para vinculá-la a esta experiência.';
+  eduUpdateLessonStep(3);
   if(record.prediction!==null){
     el('eduPredictionStatus').textContent='Experimento registrado com a hipótese associada a estes parâmetros.';
   }else if(sameModePrediction){
@@ -2257,13 +2479,15 @@ function eduRecordExperiment(mode, title, parameters, result, rawSamples, phase,
   if(sameModePrediction&&eduState.prediction&&eduState.prediction.id===pendingPrediction.id) eduState.prediction=null;
 }
 function eduUpdateLiveGraph(mode, rawSamples, phase, param, angle){
+  if(!eduState.teacherMode)return;
   if(!Array.isArray(rawSamples) || rawSamples.length < 2) return;
   const samples = eduNormalizeSamples(mode,rawSamples,phase,param,angle);
   if(samples.length < 2) return;
-  eduState.liveRecord = {mode,title:'Simulação em andamento',samples,live:true};
+  eduState.liveRecord = {mode,title:'Simulação em andamento',samples,phaseType:phase?phase.type:mode==='lab'?'projectile':null,live:true};
   drawEduGraph();
   const last = samples[samples.length-1];
-  el('eduGraphNote').textContent = `SIMULAÇÃO AO VIVO · t = ${Number(last.t).toFixed(2)} s · ${samples.length} amostras parciais.`;
+  el('eduGraphNote').textContent = `SIMULAÇÃO AO VIVO · t = ${Number(last.t).toFixed(2)} s · ${samples.length} amostras parciais · ${eduGraphAxisDescription()}.`;
+  eduUpdateLessonStep(2);
 }
 function drawEduGraph(){
   const canvas = el('eduGraphCanvas');
@@ -2287,16 +2511,25 @@ function drawEduGraph(){
     return;
   }
   const key=el('eduGraphSeries').value;
+  const trajectory=key==='trajectory';
   const records=comparison?[record,comparison]:[record];
+  if(trajectory&&records.some(item=>!(item.mode==='lab'||item.phaseType==='projectile'||(item.parameters&&item.parameters.type==='projectile')))){
+    context.fillStyle='#8fa3b8';context.font='13px system-ui';context.fillText('O gráfico y(x) está disponível para experimentos de lançamento oblíquo.',left,Math.round(height/2));
+    canvas.setAttribute('aria-label','Gráfico de trajetória indisponível para este tipo de movimento.');
+    return;
+  }
   const datasets=records.map(item=>({
     record:item,
-    series:item.samples.map(point=>({t:Number(point.t),v:Number(point[key] ?? (key==='x' ? point.position : NaN))})).filter(point=>Number.isFinite(point.t)&&Number.isFinite(point.v))
+    series:item.samples.map(point=>trajectory
+      ?{t:Number(point.x ?? point.position),v:Number(point.y)}
+      :{t:Number(point.t),v:Number(point[key] ?? (key==='x' ? point.position : NaN))}
+    ).filter(point=>Number.isFinite(point.t)&&Number.isFinite(point.v))
   }));
   if(datasets.some(dataset=>dataset.series.length<2)){
     context.fillStyle='#8fa3b8';context.font='13px system-ui';context.fillText('Esta grandeza não está disponível nos dados da experiência.',left,Math.round(height/2));
     return;
   }
-  const unitFor=item=>key==='x'||key==='y'?(item.mode==='lab'?'m':'un'):key==='speed'||key==='vx'||key==='vy'?(item.mode==='lab'?'m/s':'un/s'):(item.mode==='lab'?'m/s²':'un/s²');
+  const unitFor=item=>trajectory?(item.mode==='lab'?'m':'un'):key==='x'||key==='y'?(item.mode==='lab'?'m':'un'):key==='speed'||key==='vx'||key==='vy'?(item.mode==='lab'?'m/s':'un/s'):(item.mode==='lab'?'m/s²':'un/s²');
   if(comparison&&unitFor(record)!==unitFor(comparison)){
     context.fillStyle='#8fa3b8';context.font='13px system-ui';
     context.fillText('Não é possível sobrepor: as experiências usam unidades diferentes.',left,Math.round(height/2));
@@ -2313,17 +2546,17 @@ function drawEduGraph(){
   const px=time=>left+(time-minT)/(maxT-minT)*(right-left);
   const py=value=>bottom-(value-minV)/(maxV-minV)*(bottom-top);
   const unit=unitFor(record);
-  const labels={x:'Posição horizontal x(t)',y:'Posição vertical y(t)',speed:'Módulo da velocidade',vx:'Velocidade horizontal vx(t)',vy:'Velocidade vertical vy(t)',acceleration:'Aceleração estimada'};
+  const labels={x:'Posição horizontal x(t)',y:'Posição vertical y(t)',trajectory:'Trajetória y(x)',speed:'Módulo da velocidade',vx:'Velocidade horizontal vx(t)',vy:'Velocidade vertical vy(t)',acceleration:'Aceleração estimada'};
   context.fillStyle='#9eb0c2';context.font='10px monospace';context.textAlign='right';
   for(let i=0;i<=5;i++){
     const value=maxV-(maxV-minV)*i/5;
     context.fillText(value.toFixed(2),left-7,top+(bottom-top)*i/5+4);
   }
-  context.textAlign='left';context.fillText(`${minT.toFixed(2)} s`,left,bottom+19);
-  context.textAlign='right';context.fillText(`${maxT.toFixed(2)} s`,right,bottom+19);
+  context.textAlign='left';context.fillText(`${minT.toFixed(2)} ${trajectory?unit:'s'}`,left,bottom+19);
+  context.textAlign='right';context.fillText(`${maxT.toFixed(2)} ${trajectory?unit:'s'}`,right,bottom+19);
   context.textAlign='center';context.fillStyle='#4FD1E8';context.font='12px system-ui';
   context.fillText(`${labels[key] || key} (${unit})`,(left+right)/2,15);
-  context.fillStyle='#9eb0c2';context.fillText('Tempo (s)',(left+right)/2,height-7);
+  context.fillStyle='#9eb0c2';context.fillText(trajectory?`Posição horizontal x (${unit})`:'Tempo (s)',(left+right)/2,height-7);
   const colors=['#4FD1E8','#FF8A4C'];
   datasets.forEach((dataset,index)=>{
     context.strokeStyle=colors[index];context.lineWidth=2;context.beginPath();
@@ -2335,7 +2568,7 @@ function drawEduGraph(){
       context.fillText(`${index===0?'Última':'Selecionada'}: ${dataset.record.title.slice(0,32)}`,left+index*260,32);
     }
   });
-  canvas.setAttribute('aria-label',`${labels[key] || key} em função do tempo (${unit})${comparison?`, comparando ${record.title} com ${comparison.title}`:''}.`);
+  canvas.setAttribute('aria-label',`${trajectory?'Trajetória y em função da posição horizontal x':`${labels[key] || key} em função do tempo`} (${unit})${comparison?`, comparando ${record.title} com ${comparison.title}`:''}.`);
 }
 function renderEduHistory(){
   const select=el('eduHistorySelect');
@@ -2354,6 +2587,7 @@ function renderEduHistory(){
   if(eduState.history.some(record=>record.id===previous)) select.value=previous;
 }
 function eduCompareHistory(){
+  if(!eduState.teacherMode)return;
   const current=eduState.lastRecord;
   const previous=eduState.history.find(record=>record.id===el('eduHistorySelect').value);
   if(!current){el('eduComparison').textContent='Execute uma experiência antes de comparar.';return;}
@@ -2383,33 +2617,72 @@ function eduCompareHistory(){
     : 'unidades diferentes — comparação numérica direta não aplicada';
   el('eduComparison').textContent=`EXPERIÊNCIA SELECIONADA\n${previous.title}\nResultado: ${Number(previous.result.value).toFixed(2)} ${previous.result.unit||''}\nPrevisão: ${describePrediction(previous)}${describePredictionParameters(previous)}\nParâmetros da simulação: ${JSON.stringify(previous.parameters)}\n\nÚLTIMA EXPERIÊNCIA\n${current.title}\nResultado: ${Number(current.result.value).toFixed(2)} ${current.result.unit||''}\nPrevisão: ${describePrediction(current)}${describePredictionParameters(current)}\nParâmetros da simulação: ${JSON.stringify(current.parameters)}\n\nDiferença entre resultados (última − selecionada): ${difference}\n${sameUnit?'O gráfico sobrepõe as amostras da grandeza escolhida quando ambas estão disponíveis e têm unidades compatíveis.':''}`;
 }
+function eduRecordConclusion(){
+  if(!eduState.teacherMode)return;
+  const record=eduState.viewRecord||eduState.lastRecord;
+  const conclusion=el('eduConclusion').value.trim();
+  if(!record){
+    el('eduConclusionStatus').textContent='Execute um experimento antes de registrar a conclusão.';
+    return;
+  }
+  if(!conclusion){
+    el('eduConclusionStatus').textContent='Escreva uma conclusão antes de registrá-la.';
+    el('eduConclusion').focus();
+    return;
+  }
+  record.conclusion=conclusion;
+  if(saveEduHistory()){
+    el('eduConclusionStatus').textContent=`Conclusão vinculada a “${record.title}” e salva no histórico deste navegador.`;
+  }else{
+    el('eduConclusionStatus').textContent='Conclusão vinculada a esta experiência nesta sessão, mas não foi possível salvá-la no navegador.';
+  }
+  eduUpdateLessonStep(3);
+}
 function initLearningHub(){
   eduState.history=loadEduHistory();
   eduState.lastRecord=eduState.history[0] || null;
   eduState.viewRecord=eduState.lastRecord;
   eduState.liveRecord=null;
   renderEduHistory();
-  el('eduRecordPrediction').addEventListener('click',eduRecordPrediction);
+  el('teacherFullProjectileTrajectory').addEventListener('change',()=>{
+    if(!eduState.teacherMode)return;
+    if(currentPhase().type==='projectile'&&!state.running)drawScene(ctx,canvas,currentPhase(),0,null,false);
+  });
+  el('eduRecordPrediction').addEventListener('click',()=>{if(eduState.teacherMode)eduRecordPrediction();});
   el('eduQuestion').addEventListener('change',()=>{
+    if(!eduState.teacherMode)return;
     const mode=eduState.mode;
     if(eduState.prediction&&eduState.prediction.mode===mode&&eduState.prediction.question!==el('eduQuestion').value){
       eduMarkPredictionStale('A grandeza investigada mudou após a previsão. Registre uma nova hipótese para esta pergunta.');
     }
     el('eduPredictionUnit').textContent=el('eduQuestion').value==='time'?'s':mode==='lab'?'m':'un';
   });
-  el('eduGraphSeries').addEventListener('change',drawEduGraph);
+  el('eduGraphSeries').addEventListener('change',()=>{
+    if(!eduState.teacherMode)return;
+    drawEduGraph();
+    if(eduState.liveRecord)el('eduGraphNote').textContent=`SIMULAÇÃO AO VIVO · ${eduGraphAxisDescription()}.`;
+    else if(eduState.viewRecord)el('eduGraphNote').textContent=`${eduState.viewRecord.samples.length} amostras · ${eduGraphAxisDescription()}.`;
+  });
   el('eduHistorySelect').addEventListener('change',()=>{
+    if(!eduState.teacherMode)return;
     const record=eduState.history.find(item=>item.id===el('eduHistorySelect').value);
     if(!record)return;
     eduState.viewRecord=record;eduState.liveRecord=null;eduState.compareRecord=null;
     drawEduGraph();
+    eduRenderResultSummary(record);
+    eduRenderPredictionComparison(record);
     el('eduExplanation').textContent=record.explanation || 'Experiência carregada do histórico.';
-    el('eduGraphNote').textContent=`Registro histórico · ${record.samples.length} amostras · ${new Date(record.timestamp).toLocaleString('pt-BR')}.`;
+    el('eduGraphNote').textContent=`Registro histórico · ${record.samples.length} amostras · ${eduGraphAxisDescription()}.`;
     el('eduComparison').textContent=`Registro selecionado: ${record.title}\nResultado: ${Number(record.result.value).toFixed(2)} ${record.result.unit || ''}\nPrevisão: ${record.prediction===null||record.prediction===undefined?'sem previsão registrada':`${eduQuestionText(record.predictionQuestion||'distance')} ${Number(record.prediction).toFixed(2)} ${record.result.unit||''}`}\nParâmetros: ${JSON.stringify(record.parameters)}`;
+    el('eduConclusion').value=record.conclusion||'';
+    el('eduConclusionStatus').textContent=record.conclusion?'Conclusão carregada do histórico.':'Esta experiência ainda não tem conclusão registrada.';
+    eduUpdateLessonStep(3);
   });
   el('eduLoadGuide').addEventListener('click',eduLoadGuidedExperiment);
+  el('eduRecordConclusion').addEventListener('click',eduRecordConclusion);
   el('eduCompareBtn').addEventListener('click',eduCompareHistory);
   el('eduClearHistoryBtn').addEventListener('click',()=>{
+    if(!eduState.teacherMode)return;
     if(!eduState.history.length)return;
     if(!confirm('Apagar somente o histórico educacional deste navegador? O progresso do jogo será preservado.'))return;
     try{
@@ -2420,26 +2693,31 @@ function initLearningHub(){
       return;
     }
     eduState.history=[];eduState.lastRecord=null;eduState.viewRecord=null;eduState.liveRecord=null;eduState.compareRecord=null;
-    renderEduHistory();drawEduGraph();
+    renderEduHistory();drawEduGraph();eduRenderResultSummary(null);eduRenderPredictionComparison(null);
     el('eduGraphNote').textContent='Nenhuma experiência registrada.';
     el('eduExplanation').textContent='Histórico apagado. O progresso da Campanha e do Laboratório não foi alterado.';
     el('eduComparison').textContent='Nenhum registro disponível.';
+    el('eduConclusion').value='';
+    el('eduConclusionStatus').textContent='A conclusão ficará vinculada ao experimento selecionado.';
+    eduUpdateLessonStep(1);
   });
   el('eduTeacherToggle').addEventListener('click',()=>{
     eduState.teacherMode=!eduState.teacherMode;
-    document.body.classList.toggle('teacher-mode',eduState.teacherMode);
-    el('eduTeacherToggle').textContent=eduState.teacherMode?'Modo professor: ligado':'Modo professor: desligado';
-    el('eduTeacherToggle').setAttribute('aria-pressed',String(eduState.teacherMode));
-    el('eduTeacherPill').style.display=eduState.teacherMode?'inline-block':'none';
-    if(eduState.teacherMode&&labPanelContent.style.display!=='none')showLabPanel('play');
+    syncTeacherModeUI();
   });
   drawEduGraph();
   if(eduState.lastRecord){
+    eduRenderResultSummary(eduState.lastRecord);
+    eduRenderPredictionComparison(eduState.lastRecord);
     el('eduExplanation').textContent=eduState.lastRecord.explanation || 'Experiência carregada do histórico.';
     el('eduGraphNote').textContent=`Registro recuperado do histórico · ${eduState.lastRecord.samples.length} amostras.`;
+    el('eduConclusion').value=eduState.lastRecord.conclusion||'';
+    el('eduConclusionStatus').textContent=eduState.lastRecord.conclusion?'Conclusão carregada do histórico.':'Esta experiência ainda não tem conclusão registrada.';
   }
+  eduUpdateLessonStep(1);
   eduUpdateMode('campaign');
   eduRenderGuideDetails('uniform');
+  syncTeacherModeUI();
 }
 
 function init(){
@@ -2486,6 +2764,11 @@ function init(){
       state.prediction=null;
     }
     if(!state.running&&eduState.prediction&&eduState.prediction.mode==='campaign') eduMarkPredictionStale('A velocidade ou aceleração mudou após a previsão. Registre outra hipótese para esta configuração.');
+    if(!state.running&&currentPhase().type==='projectile'){
+      state.projectileTrail=null;
+      state.projectileTrailConfig=null;
+      drawScene(ctx,canvas,currentPhase(),0,null,false);
+    }
   });
   campaignAngleSlider=el('campaignAngleSlider');
   campaignAngleReadout=el('campaignAngleReadout');
@@ -2494,6 +2777,8 @@ function init(){
     campaignAngleReadout.textContent=campaignAngleSlider.value+'°';
     if(currentPhase().type==='projectile'&&!state.running){
       state.prediction=null;
+      state.projectileTrail=null;
+      state.projectileTrailConfig=null;
       if(eduState.prediction&&eduState.prediction.mode==='campaign') eduMarkPredictionStale('O ângulo mudou após sua previsão. Registre outra hipótese para esta configuração.');
       drawScene(ctx,canvas,currentPhase(),0,null,false);
     }

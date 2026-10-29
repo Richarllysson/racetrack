@@ -21,7 +21,7 @@ An infinite challenge mode focused on projectile motion. Players complete proced
 
 ### Teacher Mode and Learning Center
 
-Teacher Mode provides a classroom-oriented view that hides score and Laboratory store tabs while keeping the simulations available. The Learning Center supports numerical predictions, guided experiments, Canvas graphs, explanations, saved experiment history, and result comparison. Educational history is stored separately from Laboratory progress in the browser.
+Teacher Mode turns the Learning Center into a classroom board for the full predict → experiment → discuss lesson cycle. The classroom tools stay hidden until the teacher explicitly activates the mode; the header control remains available to activate or deactivate it without resetting a phase or simulation. Teachers can load guided presets and scripts, use Campaign, Sandbox, or the Trajectory Laboratory as the active simulator, record a class prediction, inspect live time-series or projectile-trajectory graphs, compare predictions with calculated results, and save a conclusion with the selected experiment. Projectile aiming shows a cached short trajectory before launch; the Campaign and Laboratory draw the path from states observed during flight. The Campaign projectile canvas keeps its coordinate transform fixed for each phase geometry, independent of aim speed and angle, so only the preview and velocity vectors move while aiming. In Teacher Mode, an explicit control can reveal the full theoretical Campaign trajectory after a run, labeled separately from the real trail. Projectile lessons reuse the active Campaign projectile phase when possible; switching from another phase or mode requires confirmation. The Campaign canvas shows velocity components from the same projectile state used by the simulation. Competitive score and Laboratory store tabs are hidden while the simulations remain available. Educational history is stored separately from Laboratory progress in the browser.
 
 Predictions are tied to the mode and parameter values captured for a run; changed settings are flagged rather than silently compared. Results include absolute error and relative error when defined. Guided activities provide an objective, investigative question, parameter setup, procedure, model assumptions, and discussion prompts. Historical graphs overlay two experiments only when the selected quantity has compatible units.
 
@@ -61,6 +61,18 @@ Racetrack Physics can be used:
 
 No external frameworks or libraries are required.
 
+### Running and testing locally
+
+Open `index.html` directly in a modern browser; the application continues to use classic scripts so local `file://` use does not require a development server. The shared, DOM-independent MU, MUV, curve-step, and projectile calculations live in `physics/kinematics.js`; the guided-lesson catalog is in `education/guides.js`. Both load before the application script.
+
+With Node.js 18 or newer, run the dependency-free model tests from the repository root:
+
+```sh
+node --test tests/kinematics.test.cjs
+```
+
+To add a guided activity, add a fully described entry to `education/guides.js` (subject, objective, question, initial parameters, procedure, model assumptions/limitations, discussion prompts, simulator, and default prediction quantity), add its option to the lesson selector in `index.html`, and connect its preset in `eduLoadGuidedExperiment()`. Use the shared physics functions rather than copying equations into lesson data. Add a catalog assertion to `tests/kinematics.test.cjs`.
+
 ## Project Philosophy
 
 **Campaign = Learn**
@@ -95,7 +107,13 @@ O projeto foi desenvolvido como uma ferramenta de apoio ao ensino, permitindo qu
 - Aprendizagem por tentativa e erro.
 
 🎓 **Modo Professor e Centro de Aprendizagem**
-- O Modo Professor prioriza a discussão física ao ocultar pontuação e abas de loja do Laboratório, sem desativar as simulações.
+- O Modo Professor organiza a aula em três etapas: prever, experimentar e discutir; suas ferramentas ficam ocultas até a ativação explícita pelo botão do cabeçalho.
+- Roteiros e presets ajudam a planejar perguntas, parâmetros, procedimentos, hipóteses do modelo e questões para a turma.
+- Campanha, Sandbox e Laboratório de Trajetórias permanecem disponíveis como simuladores integrados à aula.
+- Gráficos ao vivo incluem séries temporais e a trajetória y(x) para lançamentos oblíquos; o painel resume previsão, resultado, diferença e métricas principais.
+- Nas fases oblíquas da Campanha, o enquadramento do Canvas permanece fixo para cada geometria da fase ao ajustar velocidade ou ângulo.
+- Conclusões podem ser registradas junto à experiência selecionada no histórico.
+- Pontuação competitiva e abas da loja do Laboratório ficam ocultas sem desativar as simulações.
 - Registre previsões numéricas associadas ao modo e aos parâmetros, e compare-as com os resultados da Campanha, do Sandbox e do Laboratório.
 - Veja erro absoluto e erro relativo quando definido; alterações de parâmetros são sinalizadas para evitar comparações indevidas.
 - Use roteiros com objetivo, pergunta investigativa, procedimento, hipóteses do modelo e questões para discussão.
